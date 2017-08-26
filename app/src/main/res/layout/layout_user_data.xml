@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="头像"
+            style="@style/datasName" />
+        <ImageView
+            android:id="@+id/portrait"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="名称"
+            style="@style/datasName" />
+        <TextView
+            android:id="@+id/user_name"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="ID"
+            style="@style/datasName"/>
+        <TextView
+            android:id="@+id/user_id"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="性别"
+            style="@style/datasName" />
+        <TextView
+            android:id="@+id/user_gender"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+    style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="年龄"
+            style="@style/datasName"/>
+        <TextView
+            android:id="@+id/user_age"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="身高"
+            style="@style/datasName" />
+        <TextView
+            android:id="@+id/user_height"
+            style="@style/userDatas" />
+    </RelativeLayout>
+
+    <RelativeLayout style="@style/RelativeLayoutStyle">
+
+        <TextView
+            style="@style/datasName"
+            android:text="体重" />
+
+        <TextView
+            android:id="@+id/user_weight"
+            style="@style/userDatas" />
+    </RelativeLayout>
+
+</LinearLayout>

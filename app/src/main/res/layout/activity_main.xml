@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/name"
+            style="@style/drinkDatasName" />
+        <TextView
+            android:id="@+id/user_name"
+            style="@style/drinkDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/volume_dose"
+            style="@style/drinkDatasName" />
+        <TextView
+            android:id="@+id/volume_dose"
+            style="@style/drinkDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/last_dose"
+            style="@style/drinkDatasName" />
+        <TextView
+            android:id="@+id/last_dose"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/last_time"
+            style="@style/drinkDatasName" />
+        <TextView
+
+            android:id="@+id/last_time"
+            style="@style/drinkDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/suggested_volume_dose"
+            style="@style/drinkDatasName" />
+        <TextView
+            android:id="@+id/suggested_volume_dose"
+            style="@style/drinkDatas" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            android:text="@string/suggested_next_time"
+            style="@style/drinkDatasName" />
+        <TextView
+
+            android:id="@+id/suggested_next_time"
+            style="@style/drinkDatas" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/today_data_bt"
+            android:text="当日数据"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/rank_list_bt"
+            android:text="排行榜"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/user_data_bt"
+            android:text="个人资料"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>
