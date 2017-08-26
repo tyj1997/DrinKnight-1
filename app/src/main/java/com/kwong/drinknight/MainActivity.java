@@ -174,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.user_data_bt:
                 showUserData(userData);
                 break;
+            case R.id.rank_list_bt:
+                Intent intent = new Intent(MainActivity.this,RankingActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }

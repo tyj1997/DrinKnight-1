@@ -8,13 +8,14 @@ public class Person {
     private String id;
     private String name;
     private int rank;
-    private int imageId;
+    private String imageName;
     private int drinkVolume;
 
-    public Person(int rank, String id, String name, int imageId, int drinkVolume) {
+    public Person(int rank, String id, String name, String imageName, int drinkVolume) {
+        this.rank = rank;
         this.id = id;
         this.name = name;
-        this.imageId = imageId;
+        this.imageName = imageName;
         this.drinkVolume = drinkVolume;
     }
 
@@ -30,8 +31,8 @@ public class Person {
         return name;
     }
 
-    public int getImageId() {
-        return imageId;
+    public String getImageName() {
+        return imageName;
     }
 
     public int getDrinkVolume() {

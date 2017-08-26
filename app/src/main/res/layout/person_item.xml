@@ -5,21 +5,25 @@
     <TextView
         android:id="@+id/person_rank"
         android:layout_marginLeft="16dp"
-        android:gravity="center"
-        android:layout_width="15dp"
+        android:gravity="center_vertical"
+        android:layout_width="30dp"
         android:layout_height="wrap_content" />
     <ImageView
         android:id="@+id/person_portrait"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/person_rank"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
     <TextView
         android:id="@+id/person_name"
         android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@+id/person_portrait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"/>
     <TextView
         android:id="@+id/person_drink_volume"
+        android:layout_gravity="center_vertical"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

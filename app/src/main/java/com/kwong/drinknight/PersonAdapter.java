@@ -1,6 +1,10 @@
 package com.kwong.drinknight;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +13,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import android.os.Handler;
+import java.util.logging.LogRecord;
+
+import static com.kwong.drinknight.RankingActivity.getBitmap;
 
 /**
  * Created by 锐锋 on 2017/8/25.
@@ -23,6 +35,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         ImageView personImage;
         TextView personName;
         TextView personVolume;
+
 
         public ViewHolder(View view){
             super(view);
@@ -46,16 +59,39 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Person person = mPersonList.get(position);
-        holder.personImage.setImageResource(person.getImageId());
-        holder.personName.setText(person.getName());
-        holder.personVolume.setText(person.getDrinkVolume());
-        holder.personRank.setText(person.getRank());
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+       final Handler handler = new Handler() {
+            public void handleMessage(Message msg){
+               holder.personImage.setImageBitmap((Bitmap) msg.obj);
+            }
+        };
+        try {
+            final Person person = mPersonList.get(position);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        Message message = new Message();
+                        Bitmap bitmap = getBitmap("http://192.168.87.2/image/" + person.getImageName());
+                        message.obj = bitmap;
+                        handler.sendMessage(message);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+            holder.personName.setText(person.getName());
+            holder.personVolume.setText(String.valueOf(person.getDrinkVolume()));
+            holder.personRank.setText(String.valueOf(person.getRank()));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
         return mPersonList.size();
     }
+
 }
