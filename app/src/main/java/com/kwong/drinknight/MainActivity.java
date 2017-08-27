@@ -114,19 +114,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showUserData(UserData userData) {
-        String userName= new String();
-        String userId = new String();
-        String userGender= new String();
-        String userAge = new String();
-        String userHeight = new String();
-        String userWeight = new String();
+        String userPortrait;
+        String userName;
+        String userId;
+        String userGender;
+        String userAge;
+        String userHeight;
+        String userWeight ;
+        userPortrait = userData.getPortraitName();
+        Log.d("MainActivity","userPortraitName"+userPortrait);
         userName = userData.getName();
         userId = userData.getId();
         userGender = userData.getGender();
         userAge = userData.getAge();
         userHeight = userData.getHeight();
         userWeight = userData.getWeight();
-        String[] userDatas ={userName,userId,userGender,userAge,userHeight,userWeight};
+        String[] userDatas ={userPortrait,userName,userId,userGender,userAge,userHeight,userWeight};
         Intent intent = new Intent(MainActivity.this,UserDataActivity.class);
         intent.putExtra("user_datas",userDatas);
         startActivity(intent);

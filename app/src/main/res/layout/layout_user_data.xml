@@ -10,7 +10,7 @@
             android:text="头像"
             style="@style/datasName" />
         <ImageView
-            android:id="@+id/portrait"
+            android:id="@+id/user_portrait"
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"

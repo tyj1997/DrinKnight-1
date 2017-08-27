@@ -11,6 +11,15 @@ public class UserData {
     String age;
     String height;
     String weight;
+    String portraitName;
+
+    public String getPortraitName() {
+        return portraitName;
+    }
+
+    public void setPortraitName(String portraitName) {
+        this.portraitName = portraitName;
+    }
 
     public String getName() {
         return name;

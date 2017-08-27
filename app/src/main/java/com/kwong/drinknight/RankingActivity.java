@@ -25,7 +25,8 @@ import okhttp3.Response;
 
 public class RankingActivity extends AppCompatActivity {
 
-    String uriStr ="http://192.168.87.2/image/";
+    String uriStr ="http://140.255.159.226:9090/image/";
+    //String uriStr ="http://192.168.87.2/image/";
     private ImageView headImage;
     private List<Person>personList = new ArrayList<>();
     private RecyclerView recyclerView ;
@@ -45,13 +46,14 @@ public class RankingActivity extends AppCompatActivity {
                 try{
                     OkHttpClient client= new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://192.168.87.2/ranking_data.json")
+                           //.url("http://192.168.87.2/ranking_data.json")
+                            .url("http://140.255.159.226:9090/ranking_data.json")
                             .build();
                     Response response = client.newCall(request).execute();
-                    Log.d("RankingActivity","Response success");
+                    //Log.d("RankingActivity","Response success");
                     String responseData = response.body().string();
                     personList= parseJSONWithGSONtoRankData(responseData);
-                    Log.d("RankingActivity","personList GSON success"+personList.size());
+                    //Log.d("RankingActivity","personList GSON success"+personList.size());
                     final Bitmap headimage = getBitmap(uriStr+ personList.get(0).getImageName());
                     //showRankPersons(rankPersons);
                     runOnUiThread(new Runnable() {
@@ -60,13 +62,13 @@ public class RankingActivity extends AppCompatActivity {
                             try {
 
                                 headImage.setImageBitmap(headimage);
-                                Log.d("RankingActivity","initPersons success"+personList.size());
+                                //Log.d("RankingActivity","initPersons success"+personList.size());
 
                                 LinearLayoutManager layoutManager = new LinearLayoutManager(RankingActivity.this);
                                 recyclerView.setLayoutManager(layoutManager);
                                 PersonAdapter adapter = new PersonAdapter(personList);
                                 recyclerView.setAdapter(adapter);
-                                Log.d("RankingActivity","recyclerView success");
+                                //Log.d("RankingActivity","recyclerView success");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
