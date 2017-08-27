@@ -1,6 +1,7 @@
 package com.kwong.drinknight;
 
 import android.content.Intent;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,8 @@ import org.w3c.dom.Text;
 
 
 import java.util.List;
+import android.os.Handler;
+import java.util.logging.LogRecord;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -36,8 +39,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView suggestedVolumeDoseText;
     private TextView suggestedNextTimeText;
     private UserData userData;
+    public String suggestedVolumeDose;
+    public String suggestedNextTime;
+    private MySinkingView mSinkingView;
 
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,50 +57,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userNameText = (TextView)findViewById(R.id.user_name);
         suggestedNextTimeText = (TextView)findViewById(R.id.suggested_next_time);
         suggestedVolumeDoseText = (TextView)findViewById(R.id.suggested_volume_dose);
+
         sendRequestWithOkHttp();
+        mSinkingView = (MySinkingView) findViewById(R.id.sinking);
         intent = new Intent(this, NotifyService.class);
         //开启关闭Service
         startService(intent);
         //设置一个Toast来提醒使用者提醒的功能已经开始
         Toast.makeText(MainActivity.this,"提醒喝水的功能已经开启",Toast.LENGTH_SHORT).show();
-
         Button userDataButton = (Button)findViewById(R.id.user_data_bt);
         Button todayDataButton = (Button)findViewById(R.id.today_data_bt);
         Button rankListButton = (Button)findViewById(R.id.rank_list_bt);
+
+
         userDataButton.setOnClickListener(this);
         todayDataButton.setOnClickListener(this);
         rankListButton.setOnClickListener(this);
     }
+
     private void sendRequestWithOkHttp() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
-                    Log.d("MainActivity","into try");
+                    //Log.d("MainActivity","into try");
                     //获得饮水数据
                     OkHttpClient client1 = new OkHttpClient();
                     Request request1 = new Request.Builder()
                             //.url("http://192.168.87.2/drinking_data.json")
                             .url("http://140.255.159.226:9090/drinking_data.json")
                             .build();
-                    Log.d("MainActivity","request success");
+                    //Log.d("MainActivity","request success");
                     Response response1 = client1.newCall(request1).execute();
                     String responseData1 = response1.body().string();
                     List<DrinkData>drinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
-                    Log.d("MainActivity","GSON success");
+                    //Log.d("MainActivity","GSON success");
                     //获得用户数据
                     OkHttpClient client2 = new OkHttpClient();
                     Request request2 = new Request.Builder()
                             //.url("http://192.168.87.2/user_data.json")
                             .url("http://140.255.159.226:9090/user_data.json")
                             .build();
-                    Log.d("MainActivity","request2 success");
+                    //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
                     String responseData2 = response2.body().string();
                     userData = parseJSONWithGSONtoUserData(responseData2);
-                    Log.d("MainActivity","GSON2 success");
+                    //Log.d("MainActivity","GSON2 success");
                     handleDatas(drinkDataList,userData);
-                    Log.d("MainActivity","HANDLE success");
+                    //Log.d("MainActivity","HANDLE success");
                     //showUserData(userData);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -139,13 +150,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String lastTime = new String();
         String lastDose = new String();
         String userName = new String();
-        for (DrinkData oneData : drinkDataList){
-            volumeDose = volumeDose+parseFloat(oneData.getDose());
+        for (DrinkData oneData : drinkDataList) {
+            volumeDose = volumeDose + parseFloat(oneData.getDose());
             lastTime = oneData.getTime();
             lastDose = oneData.getDose();
             userName = oneData.getName();
         }
-        
+        suggestedVolumeDose = calculateSuggest(userData);
+        suggestedNextTime = lastTime + 30;
+        final float per = (volumeDose / Float.parseFloat(suggestedVolumeDose));
+        if (per <= 1) {
+            mSinkingView.setPercent(per);
+            //Log.d("MainActivity","mSinkingView.setPercent"+per);
+            //percent += 0.01f;
+            try {
+                Thread.sleep(40);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //Log.d("MainActivity","mSinkingView.setPercent success");
         final String finalVolumeDose = String.valueOf(volumeDose);
         final String finalLastDose = lastDose;
         final String finalLastTime = lastTime;
@@ -157,9 +181,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 lastDoseText.setText(finalLastDose);
                 lastTimeText.setText(finalLastTime);
                 userNameText.setText(finalUserName);
+                suggestedVolumeDoseText.setText(suggestedVolumeDose);
+                suggestedNextTimeText.setText(suggestedNextTime);
+
             }
         });
+        //Log.d("MainActivity","handleDatas end");
     }
+    private String calculateSuggest(UserData userData) {
+        int age = Integer.parseInt(userData.getAge());
+        int height = Integer.parseInt(userData.getHeight());
+        int weight = Integer.parseInt(userData.getWeight());
+        if ((userData.getGender()).equals("man")){
+            return String.valueOf((age-40)*5+height*10+weight*20+1000);
+        }else {
+            return String.valueOf((age-40)*5+height*10+weight*20+2000);
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -182,4 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+
+
 }
