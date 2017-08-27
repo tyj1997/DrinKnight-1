@@ -1,5 +1,6 @@
 package com.kwong.drinknight;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -32,16 +33,17 @@ import static java.lang.Float.parseFloat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView volumeDoseText;
-    private TextView lastDoseText;
-    private TextView lastTimeText;
-    private TextView userNameText;
-    private TextView suggestedVolumeDoseText;
-    private TextView suggestedNextTimeText;
-    private UserData userData;
-    public String suggestedVolumeDose;
-    public String suggestedNextTime;
-    private MySinkingView mSinkingView;
+    private static TextView volumeDoseText;
+    private static TextView lastDoseText;
+    private static TextView lastTimeText;
+    private static TextView userNameText;
+    private static TextView suggestedVolumeDoseText;
+    private static TextView suggestedNextTimeText;
+    private static UserData userData;
+    private static List<DrinkData>drinkDataList;
+    public static String suggestedVolumeDose;
+    public static String suggestedNextTime;
+    private static MySinkingView mSinkingView;
 
     Intent intent;
 
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rankListButton.setOnClickListener(this);
     }
 
-    private void sendRequestWithOkHttp() {
+    public static void sendRequestWithOkHttp() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -84,26 +86,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //获得饮水数据
                     OkHttpClient client1 = new OkHttpClient();
                     Request request1 = new Request.Builder()
-                            //.url("http://192.168.87.2/drinking_data.json")
-                            .url("http://140.255.159.226:9090/drinking_data.json")
+                            .url("http://192.168.87.2/drinking_data.json")
+                            //.url("http://140.255.159.226:9090/drinking_data.json")
                             .build();
                     //Log.d("MainActivity","request success");
                     Response response1 = client1.newCall(request1).execute();
                     String responseData1 = response1.body().string();
-                    List<DrinkData>drinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
-                    //Log.d("MainActivity","GSON success");
+                    drinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
+                    //Log.d("MainActivity","GSON success"+drinkDataList.size());
                     //获得用户数据
                     OkHttpClient client2 = new OkHttpClient();
                     Request request2 = new Request.Builder()
-                            //.url("http://192.168.87.2/user_data.json")
-                            .url("http://140.255.159.226:9090/user_data.json")
+                            .url("http://192.168.87.2/user_data.json")
+                            //.url("http://140.255.159.226:9090/user_data.json")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
                     String responseData2 = response2.body().string();
                     userData = parseJSONWithGSONtoUserData(responseData2);
-                    //Log.d("MainActivity","GSON2 success");
-                    handleDatas(drinkDataList,userData);
+                    //Log.d("MainActivity","GSON2 success"+userData.getName());
+                    Activity a = (Activity)volumeDoseText.getContext();
+                    handleDatas(a,drinkDataList,userData);
                     //Log.d("MainActivity","HANDLE success");
                     //showUserData(userData);
                 }catch (Exception e){
@@ -136,29 +139,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //解析json格式数据
-    private List parseJSONWithGSONtoDrinkData(String jsonData) {
+    private static List parseJSONWithGSONtoDrinkData(String jsonData) {
         Gson gson = new Gson();
         List<DrinkData> drinkDatas = gson.fromJson(jsonData, new TypeToken<List<DrinkData>>(){}.getType());
         return drinkDatas;
     }
-    private UserData parseJSONWithGSONtoUserData(String jsonData) {
+    private static UserData parseJSONWithGSONtoUserData(String jsonData) {
         Gson gson = new Gson();
         UserData userData = gson.fromJson(jsonData, UserData.class);
         return userData;
     }
 
     //处理数据
-    private void handleDatas(List<DrinkData> drinkDataList,UserData userData) {
+    public static void handleDatas(Activity activity, List<DrinkData> drinkDataList, UserData userData) {
         float volumeDose = 0;
         String lastTime = new String();
         String lastDose = new String();
         String userName = new String();
+        //Log.d("MainActivity","handleDatas "+drinkDataList.size()+" "+drinkDataList.get(0).getDose());
         for (DrinkData oneData : drinkDataList) {
+            //Log.d("MainActivity","handleDatas "+oneData.getDose()+" "+oneData.getName()+" ");
             volumeDose = volumeDose + parseFloat(oneData.getDose());
             lastTime = oneData.getTime();
             lastDose = oneData.getDose();
             userName = oneData.getName();
         }
+        //Log.d("MainActivity","handleDatas ok");
         suggestedVolumeDose = calculateSuggest(userData);
         suggestedNextTime = lastTime + 30;
         final float per = (volumeDose / Float.parseFloat(suggestedVolumeDose));
@@ -171,13 +177,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }else{
+            mSinkingView.setPercent(1);
         }
         //Log.d("MainActivity","mSinkingView.setPercent success");
         final String finalVolumeDose = String.valueOf(volumeDose);
         final String finalLastDose = lastDose;
         final String finalLastTime = lastTime;
         final String finalUserName = userName;
-        runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 volumeDoseText.setText(finalVolumeDose);
@@ -191,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         //Log.d("MainActivity","handleDatas end");
     }
-    private String calculateSuggest(UserData userData) {
+    private static String calculateSuggest(UserData userData) {
         int age = Integer.parseInt(userData.getAge());
         int height = Integer.parseInt(userData.getHeight());
         int weight = Integer.parseInt(userData.getWeight());

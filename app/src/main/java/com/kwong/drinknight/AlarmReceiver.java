@@ -11,7 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
+import static com.kwong.drinknight.MainActivity.sendRequestWithOkHttp;
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .build();
         manager.notify(1,builder);
         Log.d("AlarmReceiver","onReceive is executed");
-
+        sendRequestWithOkHttp();
         //再次开启NotifyService这个服务，从而可以
         Intent in = new Intent(context, NotifyService.class);
         context.startService(in);

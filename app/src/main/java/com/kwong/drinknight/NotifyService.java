@@ -34,7 +34,7 @@ public class NotifyService extends Service {
         }
     };
     public NotifyService() {
-        Log.d("NotifyService","NotifyService is created");
+        //Log.d("NotifyService","NotifyService is created");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class NotifyService extends Service {
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         //ELAPSED_REALTIME_WAKEUP表示让定时任务的出发时间从系统开机算起，并且会唤醒CPU。
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
-        Log.d("NotifyService","onStartCommand is executed");
+        //Log.d("NotifyService","onStartCommand is executed");
         return super.onStartCommand(intent, flags, startId);
 
 
@@ -70,6 +70,6 @@ public class NotifyService extends Service {
         Intent i = new Intent(this, AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         manager.cancel(pi);
-        Log.d("NotifyService","onDestroy is executed");
+        //Log.d("NotifyService","onDestroy is executed");
     }
 }
