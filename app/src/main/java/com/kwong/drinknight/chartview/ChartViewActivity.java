@@ -51,7 +51,7 @@ public class ChartViewActivity extends AppCompatActivity {
 
     private void initChatView() {
 
-        myChartView.setLefrColorBottom(getResources().getColor(R.color.leftColorBottom));
+        myChartView.setLeftColorBottom(getResources().getColor(R.color.leftColorBottom));
         myChartView.setLeftColor(getResources().getColor(R.color.leftColor));
         myChartView.setRightColor(getResources().getColor(R.color.rightColor));
         myChartView.setRightColorBottom(getResources().getColor(R.color.rightBottomColor));

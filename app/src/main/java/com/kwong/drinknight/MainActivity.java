@@ -20,6 +20,7 @@ import com.kwong.drinknight.user_data_page.UserData;
 import com.kwong.drinknight.user_data_page.UserDataActivity;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -41,8 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String suggestedVolumeDose;
     public static String suggestedNextTime;
     private static MySinkingView mSinkingView;
-
+    public static ArrayList<String>DrinkingTime=new ArrayList<>();
+    public static ArrayList<Integer>DrinkingDose=new ArrayList<>();
+    public static double sumdrink;
     Intent intent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,8 +165,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastTime = oneData.getTime();
             lastDose = oneData.getDose();
             userName = oneData.getName();
+            DrinkingTime.add(lastTime);
+            DrinkingDose.add(Integer.valueOf(lastDose));
+
         }
         //Log.d("MainActivity","handleDatas ok");
+        sumdrink=volumeDose;
         suggestedVolumeDose = calculateSuggest(userData);
         suggestedNextTime = lastTime + 30;
         final float per = (volumeDose / Float.parseFloat(suggestedVolumeDose));
@@ -227,7 +235,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.today_data_bt:
-                Intent intent1 = new Intent(MainActivity.this,ChartViewActivity.class);
+                Intent intent1 = new Intent(MainActivity.this,TodayData.class);
+                intent1.putExtra("drink_time",DrinkingTime);
+                intent1.putExtra("drink_dose",DrinkingDose);
+                intent1.putExtra("drink_sum",sumdrink);
                 startActivity(intent1);
             default:
                 break;

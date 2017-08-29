@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+    <TextView
+        android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+        android:layout_weight="0.05"
+        android:textSize="24dp"
+        android:text="当日饮水数据"
+        android:gravity="center"
+        />
+    <lecho.lib.hellocharts.view.ColumnChartView
+        android:layout_weight="0.60"
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/tv_chart"
+        android:padding="24dp"></lecho.lib.hellocharts.view.ColumnChartView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05"
+        android:textSize="24dp"
+        android:text="TextView" />
+
+</LinearLayout>

@@ -40,6 +40,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".chartview.ChartViewActivity"></activity>
+        <activity android:name=".TodayData"></activity>
     </application>
 
 </manifest>
