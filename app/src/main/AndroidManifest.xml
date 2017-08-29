@@ -33,6 +33,7 @@
             android:exported="true" />
 
         <activity android:name=".UserDataActivity" />
+        <activity android:name=".TodayData" />
         <activity android:name=".RankingActivity" />
         <activity
             android:name=".LoginActivity">
