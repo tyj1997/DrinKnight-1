@@ -2,7 +2,6 @@ package com.kwong.drinknight;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,18 +11,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Date;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+import com.kwong.drinknight.background_service.NotifyService;
+import com.kwong.drinknight.chartview.ChartViewActivity;
+import com.kwong.drinknight.ranking_page.RankingActivity;
+import com.kwong.drinknight.user_data_page.UserData;
+import com.kwong.drinknight.user_data_page.UserDataActivity;
 
 
 import java.util.List;
-import android.os.Handler;
-import java.util.logging.LogRecord;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -99,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Request request2 = new Request.Builder()
                             .url("http://192.168.87.2/user_data.json")
                             //.url("http://140.255.159.226:9090/user_data.json")
+                            //.url("http://10.8.189.234/user_data.json")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
@@ -228,6 +226,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this,RankingActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.today_data_bt:
+                Intent intent1 = new Intent(MainActivity.this,ChartViewActivity.class);
+                startActivity(intent1);
             default:
                 break;
         }

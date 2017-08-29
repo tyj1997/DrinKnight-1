@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.ranking_page;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kwong.drinknight.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +25,9 @@ import okhttp3.Response;
 
 public class RankingActivity extends AppCompatActivity {
 
-    String uriStr ="http://140.255.159.226:9090/image/";
-    //String uriStr ="http://192.168.87.2/image/";
+    //String uriStr ="http://10.8.189.234/image/"
+    //String uriStr ="http://140.255.159.226:9090/image/";
+    String uriStr ="http://192.168.87.2/image/";
     private ImageView headImage;
     private List<Person>personList = new ArrayList<>();
     private RecyclerView recyclerView ;
@@ -46,8 +47,9 @@ public class RankingActivity extends AppCompatActivity {
                 try{
                     OkHttpClient client= new OkHttpClient();
                     Request request = new Request.Builder()
-                           //.url("http://192.168.87.2/ranking_data.json")
-                            .url("http://140.255.159.226:9090/ranking_data.json")
+                           .url("http://192.168.87.2/ranking_data.json")
+                            //.url("http://140.255.159.226:9090/ranking_data.json")
+                            //.url("http://10.8.189.234/ranking_data.json")
                             .build();
                     Response response = client.newCall(request).execute();
                     //Log.d("RankingActivity","Response success");

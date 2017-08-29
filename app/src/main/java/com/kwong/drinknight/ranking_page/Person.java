@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.ranking_page;
 
 /**
  * Created by 锐锋 on 2017/8/25.

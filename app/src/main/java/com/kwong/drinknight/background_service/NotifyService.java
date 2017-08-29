@@ -1,22 +1,14 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.background_service;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
-import static android.content.ContentValues.TAG;
-import static android.icu.text.DateTimePatternGenerator.DAY;
+import com.kwong.drinknight.DetectListener;
+import com.kwong.drinknight.DetectTask;
 
 public class NotifyService extends Service {
 

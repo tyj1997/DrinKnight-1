@@ -38,4 +38,14 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">20dp</item>
     </style>
+
+    <declare-styleable name="MyChartView">
+        <attr name="leftColor" format="color"></attr>
+        <attr name="leftColorBottom" format="color"></attr>
+        <attr name="selectLeftColor" format="color"></attr>
+        <attr name="rightColor" format="color"></attr>
+        <attr name="rightColorBottom" format="color"></attr>
+        <attr name="selectRightColor" format="color"></attr>
+        <attr name="xyColor" format="color"></attr>
+    </declare-styleable>
 </resources>

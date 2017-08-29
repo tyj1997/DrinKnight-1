@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.background_service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -6,11 +6,13 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.kwong.drinknight.MainActivity;
+import com.kwong.drinknight.R;
+import com.kwong.drinknight.background_service.NotifyService;
+
 import static com.kwong.drinknight.MainActivity.sendRequestWithOkHttp;
 public class AlarmReceiver extends BroadcastReceiver {
 

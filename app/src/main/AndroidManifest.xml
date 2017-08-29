@@ -18,29 +18,28 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask">
-
-        </activity>
+            android:launchMode="singleTask"></activity>
 
         <service
-            android:name=".NotifyService"
+            android:name=".background_service.NotifyService"
             android:enabled="true"
             android:exported="true" />
 
         <receiver
-            android:name=".AlarmReceiver"
+            android:name=".background_service.AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".UserDataActivity" />
-        <activity android:name=".RankingActivity" />
-        <activity
-            android:name=".LoginActivity">
+        <activity android:name=".user_data_page.UserDataActivity" />
+        <activity android:name=".ranking_page.RankingActivity" />
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".chartview.ChartViewActivity"></activity>
     </application>
 
 </manifest>

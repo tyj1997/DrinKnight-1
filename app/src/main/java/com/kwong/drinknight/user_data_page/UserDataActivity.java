@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.user_data_page;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,12 +8,15 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kwong.drinknight.R;
+
 import java.io.IOException;
 
-import static com.kwong.drinknight.RankingActivity.getBitmap;
+import static com.kwong.drinknight.ranking_page.RankingActivity.getBitmap;
 
 public class UserDataActivity extends AppCompatActivity {
 
+    //private String uriStr ="http://10.8.189.234/image/"
     private String uriStr = "http://192.168.87.2/image/";
     //private String uriStr = "http://140.255.159.226:9090/image/";
     private ImageView userPortrait;
