@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.home_page;
 
 import android.widget.FrameLayout;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.graphics.Path.Direction;
 import android.graphics.Region.Op;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import com.kwong.drinknight.R;
 
 /**
  * Created by 锐锋 on 2017/8/27.

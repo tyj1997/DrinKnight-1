@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".home_page.MainActivity"
             android:launchMode="singleTask"></activity>
 
         <service
@@ -32,15 +32,14 @@
 
         <activity android:name=".user_data_page.UserDataActivity" />
         <activity android:name=".ranking_page.RankingActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".chartview.ChartViewActivity"></activity>
-        <activity android:name=".TodayData"></activity>
+        <activity android:name=".drinking_data_view.TodayData"></activity>
     </application>
 
 </manifest>

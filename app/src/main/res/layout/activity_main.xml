@@ -4,9 +4,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".home_page.MainActivity"
     >
-    <com.kwong.drinknight.MySinkingView
+    <com.kwong.drinknight.home_page.MySinkingView
         android:id="@+id/sinking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@drawable/charming2" />
-    </com.kwong.drinknight.MySinkingView>
+    </com.kwong.drinknight.home_page.MySinkingView>
     <RelativeLayout
         style="@style/RelativeLayoutStyle">
         <TextView

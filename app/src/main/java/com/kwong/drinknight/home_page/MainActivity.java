@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.home_page;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,8 +13,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kwong.drinknight.R;
 import com.kwong.drinknight.background_service.NotifyService;
-import com.kwong.drinknight.chartview.ChartViewActivity;
+import com.kwong.drinknight.drinking_data_view.TodayData;
 import com.kwong.drinknight.ranking_page.RankingActivity;
 import com.kwong.drinknight.user_data_page.UserData;
 import com.kwong.drinknight.user_data_page.UserDataActivity;

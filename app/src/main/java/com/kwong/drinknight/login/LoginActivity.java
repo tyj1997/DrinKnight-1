@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,6 +32,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.kwong.drinknight.home_page.MainActivity;
+import com.kwong.drinknight.R;
 
 import java.util.ArrayList;
 import java.util.List;

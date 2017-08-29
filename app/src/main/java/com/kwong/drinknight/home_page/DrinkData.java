@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.home_page;
 
 import java.sql.Time;
 

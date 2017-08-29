@@ -7,24 +7,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 
-import com.kwong.drinknight.DetectListener;
-import com.kwong.drinknight.DetectTask;
-
 public class NotifyService extends Service {
 
-    private DetectTask detectTask;
 
-    private DetectListener listener = new DetectListener() {
-        @Override
-        public void onTimeBeforeDrink(int time) {
 
-        }
 
-        @Override
-        public void onTimeToDrink() {
-
-        }
-    };
     public NotifyService() {
         //Log.d("NotifyService","NotifyService is created");
     }

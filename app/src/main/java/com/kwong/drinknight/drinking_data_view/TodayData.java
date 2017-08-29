@@ -1,4 +1,4 @@
-package com.kwong.drinknight;
+package com.kwong.drinknight.drinking_data_view;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import com.kwong.drinknight.R;
 
 import java.util.ArrayList;
 import java.util.List;

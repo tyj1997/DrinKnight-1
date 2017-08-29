@@ -9,11 +9,10 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.kwong.drinknight.MainActivity;
+import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.R;
-import com.kwong.drinknight.background_service.NotifyService;
 
-import static com.kwong.drinknight.MainActivity.sendRequestWithOkHttp;
+import static com.kwong.drinknight.home_page.MainActivity.sendRequestWithOkHttp;
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
