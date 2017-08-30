@@ -22,7 +22,10 @@ import com.kwong.drinknight.user_data_page.UserDataActivity;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static MySinkingView mSinkingView;
     public static ArrayList<String>DrinkingTime=new ArrayList<>();
     public static ArrayList<Integer>DrinkingDose=new ArrayList<>();
+    private static LinkedHashMap<String,HashMap<String,Double>> DrinkDateTime = new LinkedHashMap<String,HashMap<String,Double>>();
+
     public static double sumdrink;
     Intent intent;
 
@@ -90,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Request request1 = new Request.Builder()
                             //.url("http://192.168.87.2/drinking_data.json")
                             //.url("http://140.255.159.226:9090/drinking_data.json")
-                            .url("http://10.8.189.234/drinking_data.json")
+                            //.url("http://10.8.189.234/drinking_data.json")
+                            .url("http://192.168.56.1:8888/drinking_data.json")
                             .build();
                     //Log.d("MainActivity","request success");
                     Response response1 = client1.newCall(request1).execute();
@@ -102,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Request request2 = new Request.Builder()
                             //.url("http://192.168.87.2/user_data.json")
                             //.url("http://140.255.159.226:9090/user_data.json")
-                            .url("http://10.8.189.234/user_data.json")
+                           // .url("http://10.8.189.234/user_data.json")
+                            .url("http://192.168.56.1:8888/user_data.json")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
@@ -160,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String lastTime = new String();
         String lastDose = new String();
         String userName = new String();
+        String lastDate = new String();
+
         //Log.d("MainActivity","handleDatas "+drinkDataList.size()+" "+drinkDataList.get(0).getDose());
         for (DrinkData oneData : drinkDataList) {
             //Log.d("MainActivity","handleDatas "+oneData.getDose()+" "+oneData.getName()+" ");
@@ -167,11 +176,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastTime = oneData.getTime();
             lastDose = oneData.getDose();
             userName = oneData.getName();
-            if(!DrinkingTime.contains(lastTime)) {
-                DrinkingTime.add(lastTime);
-                DrinkingDose.add(Integer.valueOf(lastDose));
+            lastDate=oneData.getDate();
+            if(!DrinkDateTime.containsKey(lastDate)){
+                DrinkDateTime.put(lastDate,new HashMap<String, Double>());
             }
+            if(!DrinkDateTime.get(lastDate).containsKey(lastTime)){
+                DrinkDateTime.get(lastDate).put(lastTime,Double.valueOf(lastDose));
+
+            }
+
+//            if(!DrinkingTime.contains(lastTime)) {
+//                DrinkingTime.add(lastTime);
+//                DrinkingDose.add(Integer.valueOf(lastDose));
+//            }
         }
+
         //Log.d("MainActivity","handleDatas ok");
         sumdrink=volumeDose;
         suggestedVolumeDose = calculateSuggest(userData);
@@ -239,8 +258,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.today_data_bt:
                 Intent intent1 = new Intent(MainActivity.this,TodayData.class);
-                intent1.putExtra("drink_time",DrinkingTime);
-                intent1.putExtra("drink_dose",DrinkingDose);
+                //intent1.putExtra("drink_time",DrinkingTime);
+               // intent1.putExtra("drink_dose",DrinkingDose);
+                intent1.putExtra("drink_datetime",DrinkDateTime);
                 intent1.putExtra("drink_sum",sumdrink);
                 startActivity(intent1);
             default:

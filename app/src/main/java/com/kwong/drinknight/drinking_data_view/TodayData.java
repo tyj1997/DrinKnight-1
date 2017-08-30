@@ -5,13 +5,21 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.kwong.drinknight.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import lecho.lib.hellocharts.formatter.ColumnChartValueFormatter;
 import lecho.lib.hellocharts.formatter.SimpleColumnChartValueFormatter;
@@ -34,30 +42,63 @@ import lecho.lib.hellocharts.view.LineChartView;
  * Created by Administrator on 2017/8/29.
  */
 
-public class TodayData extends AppCompatActivity{
+public class TodayData extends AppCompatActivity implements View.OnClickListener{
     private ColumnChartView chart;
 
     private ColumnChartData data;
     private double drinksum;
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.TodayData:
+                setFirstChart();
+                break;
+            case R.id.WeekData:
+                setWeekChart();
+                break;
+            case R.id.MonthData:
+            //    setMonthChart();
+                break;
+            default:
+                break;
+        }
+    }
+
     private TextView textView;
+    private String today;
+
     private ArrayList<String> DrinkingTime=new ArrayList<>();
-
+    private int Xcount=0;
     private ArrayList <Integer>DrinkingDose=new ArrayList<>();
-
+    private HashMap<String,HashMap<String,Double>> DrinkDateTime = new HashMap<String,HashMap<String,Double>>();
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chart_data);
+        Button todaydata=(Button)findViewById(R.id.TodayData);
+        Button Weekdata=(Button)findViewById(R.id.WeekData);
+        Button Monthdata=(Button)findViewById(R.id.MonthData);
+        todaydata.setOnClickListener(this);
+        Weekdata.setOnClickListener(this);
+        Monthdata.setOnClickListener(this);
         Intent intent=getIntent();
-        DrinkingTime=intent.getStringArrayListExtra("drink_time");
-        DrinkingDose=intent.getIntegerArrayListExtra("drink_dose");
+       // DrinkingTime=intent.getStringArrayListExtra("drink_time");
+      //  DrinkingDose=intent.getIntegerArrayListExtra("drink_dose");
+        Calendar now = Calendar.getInstance();
+        System.out.println("年：" + now.get(Calendar.YEAR));
+        System.out.println("月：" + (now.get(Calendar.MONTH) + 1));
+        System.out.println("日：" + now.get(Calendar.DAY_OF_MONTH));
+        today=now.get(Calendar.YEAR)+"/"+(now.get(Calendar.MONTH) + 1)+"/"+now.get(Calendar.DAY_OF_MONTH);
+        DrinkDateTime=(HashMap)intent.getSerializableExtra("drink_datetime");
         drinksum=intent.getDoubleExtra("drink_sum",0.00);
         textView=(TextView)findViewById(R.id.textView);
         textView.setText("  饮水总量:"+drinksum+"ml");
         initView();
         setFirstChart();
+
       //  getAxisXLables();//获取x轴的标注
      //  getAxisPoints();//获取坐标点
     //    initLineChart();//初始化
@@ -68,54 +109,124 @@ public class TodayData extends AppCompatActivity{
     }
     private void setFirstChart() {
         int numSubcolumns = 1;
-        int numColumns = DrinkingTime.size();
-        //定义一个圆柱对象集合
-        List<Column> columns = new ArrayList<Column>();
-        //子列数据集合
-        List<SubcolumnValue> values;
+        if(DrinkDateTime!=null&&DrinkDateTime.get(today)!=null) {
+            int numColumns = DrinkDateTime.get(today).size();
+            Set<String> keys = DrinkDateTime.get(today).keySet();
+            Iterator iterator = keys.iterator();
+            //定义一个圆柱对象集合
+            List<Column> columns = new ArrayList<Column>();
+            //子列数据集合
+            List<SubcolumnValue> values;
 
-        List<AxisValue> axisValues = new ArrayList<AxisValue>();
-        //遍历列数numColumns
-        for (int i = 0; i < numColumns; i++) {
+            List<AxisValue> axisValues = new ArrayList<AxisValue>();
+            //遍历列数numColumns
+            for (String Drinktime : keys) {
 
-            values = new ArrayList<SubcolumnValue>();
-            //遍历每一列的每一个子列
-            for (int j = 0; j < numSubcolumns; ++j) {
-                //为每一柱图添加颜色和数值
-                float f = DrinkingDose.get(i);
-                values.add(new SubcolumnValue(f,ChartUtils.pickColor()));
+                values = new ArrayList<SubcolumnValue>();
+                //遍历每一列的每一个子列
+                for (int j = 0; j < numSubcolumns; ++j) {
+                    //为每一柱图添加颜色和数值
+                    float f = (float) DrinkDateTime.get(today).get(Drinktime).doubleValue();
+                    values.add(new SubcolumnValue(f, ChartUtils.pickColor()));
+                }
+                Column column = new Column(values);
+                ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
+                column.setFormatter(chartValueFormatter);
+                //是否有数据标注
+                column.setHasLabels(false);
+                //是否是点击圆柱才显示数据标注
+                column.setHasLabelsOnlyForSelected(true);
+                columns.add(column);
+                //给x轴坐标设置描述
+                axisValues.add(new AxisValue(Xcount++).setLabel(Drinktime));
             }
-            Column column = new Column(values);
-            ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
-            column.setFormatter(chartValueFormatter);
-            //是否有数据标注
-            column.setHasLabels(false);
-            //是否是点击圆柱才显示数据标注
-            column.setHasLabelsOnlyForSelected(true);
-            columns.add(column);
-            //给x轴坐标设置描述
-            axisValues.add(new AxisValue(i).setLabel(DrinkingTime.get(i)));
+            Xcount = 0;
+            data = new ColumnChartData(columns);
+
+            //定义x轴y轴相应参数
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            axisY.setName("饮水量(ml)");//轴名称
+            axisX.setName("时间");
+            axisY.hasLines();//是否显示网格线
+            axisY.setTextColor(R.color.blue);//颜色
+
+            axisX.hasLines();
+            axisX.setTextColor(R.color.blue);
+            axisX.setValues(axisValues);
+            //把X轴Y轴数据设置到ColumnChartData 对象中
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+            //给表填充数据，显示出来
+            chart.setColumnChartData(data);
+            chart.startDataAnimation(2000);
         }
-        data= new ColumnChartData(columns);
-
-        //定义x轴y轴相应参数
-        Axis axisX = new Axis();
-        Axis axisY = new Axis().setHasLines(true);
-        axisY.setName("饮水量(ml)");//轴名称
-        axisX.setName("时间");
-        axisY.hasLines();//是否显示网格线
-        axisY.setTextColor(R.color.blue);//颜色
-
-        axisX.hasLines();
-        axisX.setTextColor(R.color.blue);
-        axisX.setValues(axisValues);
-        //把X轴Y轴数据设置到ColumnChartData 对象中
-        data.setAxisXBottom(axisX);
-        data.setAxisYLeft(axisY);
-        //给表填充数据，显示出来
-        chart.setColumnChartData(data);
-        chart.startDataAnimation(2000);
     }
+    private void setWeekChart(){
+        Calendar c = Calendar.getInstance();
+       c.add(Calendar.DAY_OF_MONTH,-6);
+        Date date = c.getTime();
+        String WeekBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
+        int numSubcolumns = 1;
+        if(DrinkDateTime!=null&&DrinkDateTime.get(today)!=null) {
+            int numColumns = 7;
+            //定义一个圆柱对象集合
+            List<Column> columns = new ArrayList<Column>();
+            //子列数据集合
+            List<SubcolumnValue> values;
+
+            List<AxisValue> axisValues = new ArrayList<AxisValue>();
+            //遍历列数numColumns
+            for (int i=0;i<7;i++) {
+
+                float f=0;
+                values = new ArrayList<SubcolumnValue>();
+                //遍历每一列的每一个子列
+                if(DrinkDateTime.get(WeekBefore)!=null) {
+                    Set<String> key = DrinkDateTime.get(WeekBefore).keySet();
+                        for (String Drinktime : key) {
+                            f += (float) DrinkDateTime.get(WeekBefore).get(Drinktime).doubleValue();
+                        }
+                    values.add(new SubcolumnValue(f/1000, ChartUtils.pickColor()));
+                }
+                else
+                    values.add(new SubcolumnValue(0, ChartUtils.pickColor()));
+                Column column = new Column(values);
+                ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
+                column.setFormatter(chartValueFormatter);
+                //是否有数据标注
+                column.setHasLabels(false);
+                //是否是点击圆柱才显示数据标注
+                column.setHasLabelsOnlyForSelected(true);
+                columns.add(column);
+                //给x轴坐标设置描述
+                axisValues.add(new AxisValue(Xcount++).setLabel((c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH)));
+                c.add(Calendar.DAY_OF_MONTH,1);
+                WeekBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
+            }
+            Xcount = 0;
+            data = new ColumnChartData(columns);
+
+            //定义x轴y轴相应参数
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            axisY.setName("饮水量(L)");//轴名称
+            axisX.setName("时间");
+            axisY.hasLines();//是否显示网格线
+            axisY.setTextColor(R.color.blue);//颜色
+
+            axisX.hasLines();
+            axisX.setTextColor(R.color.blue);
+            axisX.setValues(axisValues);
+            //把X轴Y轴数据设置到ColumnChartData 对象中
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+            //给表填充数据，显示出来
+            chart.setColumnChartData(data);
+            chart.startDataAnimation(2000);
+        }
+    }
+
     private void getAxisXLables(){
         for (int i = 0; i <DrinkingTime.size() ;i++) {
             mAxisXValues.add(new AxisValue(i).setLabel( DrinkingTime.get(i)));
