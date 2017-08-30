@@ -25,9 +25,9 @@ import okhttp3.Response;
 
 public class RankingActivity extends AppCompatActivity {
 
-    //String uriStr ="http://10.8.189.234/image/"
+    String uriStr ="http://10.8.189.234/image/";
     //String uriStr ="http://140.255.159.226:9090/image/";
-    String uriStr ="http://192.168.87.2/image/";
+   // String uriStr ="http://192.168.87.2/image/";
     private ImageView headImage;
     private List<Person>personList = new ArrayList<>();
     private RecyclerView recyclerView ;
@@ -47,9 +47,9 @@ public class RankingActivity extends AppCompatActivity {
                 try{
                     OkHttpClient client= new OkHttpClient();
                     Request request = new Request.Builder()
-                           .url("http://192.168.87.2/ranking_data.json")
+                           //.url("http://192.168.87.2/ranking_data.json")
                             //.url("http://140.255.159.226:9090/ranking_data.json")
-                            //.url("http://10.8.189.234/ranking_data.json")
+                            .url("http://10.8.189.234/ranking_data.json")
                             .build();
                     Response response = client.newCall(request).execute();
                     //Log.d("RankingActivity","Response success");

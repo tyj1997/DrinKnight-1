@@ -16,8 +16,8 @@ import static com.kwong.drinknight.ranking_page.RankingActivity.getBitmap;
 
 public class UserDataActivity extends AppCompatActivity {
 
-    //private String uriStr ="http://10.8.189.234/image/"
-    private String uriStr = "http://192.168.87.2/image/";
+    private String uriStr ="http://10.8.189.234/image/";
+   // private String uriStr = "http://192.168.87.2/image/";
     //private String uriStr = "http://140.255.159.226:9090/image/";
     private ImageView userPortrait;
     private TextView userNameText;

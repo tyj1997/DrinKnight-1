@@ -88,8 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //获得饮水数据
                     OkHttpClient client1 = new OkHttpClient();
                     Request request1 = new Request.Builder()
-                            .url("http://192.168.87.2/drinking_data.json")
+                            //.url("http://192.168.87.2/drinking_data.json")
                             //.url("http://140.255.159.226:9090/drinking_data.json")
+                            .url("http://10.8.189.234/drinking_data.json")
                             .build();
                     //Log.d("MainActivity","request success");
                     Response response1 = client1.newCall(request1).execute();
@@ -99,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //获得用户数据
                     OkHttpClient client2 = new OkHttpClient();
                     Request request2 = new Request.Builder()
-                            .url("http://192.168.87.2/user_data.json")
+                            //.url("http://192.168.87.2/user_data.json")
                             //.url("http://140.255.159.226:9090/user_data.json")
-                            //.url("http://10.8.189.234/user_data.json")
+                            .url("http://10.8.189.234/user_data.json")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
@@ -166,9 +167,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             lastTime = oneData.getTime();
             lastDose = oneData.getDose();
             userName = oneData.getName();
-            DrinkingTime.add(lastTime);
-            DrinkingDose.add(Integer.valueOf(lastDose));
-
+            if(!DrinkingTime.contains(lastTime)) {
+                DrinkingTime.add(lastTime);
+                DrinkingDose.add(Integer.valueOf(lastDose));
+            }
         }
         //Log.d("MainActivity","handleDatas ok");
         sumdrink=volumeDose;
