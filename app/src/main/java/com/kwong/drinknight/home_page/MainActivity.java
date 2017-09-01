@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //取消标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        View v =findViewById(R.id.layouts);
+        v.getBackground().setAlpha(180);
         volumeDoseText = (TextView)findViewById(R.id.volume_dose);
         lastDoseText = (TextView)findViewById(R.id.last_dose);
         lastTimeText = (TextView)findViewById(R.id.last_time);

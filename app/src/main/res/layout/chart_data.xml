@@ -35,17 +35,22 @@
             android:id="@+id/TodayData"
             android:text="当天数据"
             android:layout_width="wrap_content"
+            android:background="@drawable/button"
+            android:layout_marginRight="10dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/WeekData"
             android:text="周数据"
             android:layout_width="wrap_content"
+            android:background="@drawable/button"
+            android:layout_marginRight="10dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/MonthData"
             android:text="月数据"
-
+            android:background="@drawable/button"
             android:layout_width="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
