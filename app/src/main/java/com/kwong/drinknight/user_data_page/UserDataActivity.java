@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +36,7 @@ public class UserDataActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String[] datas = intent.getStringArrayExtra("user_datas");
         userPortrait = (ImageView) findViewById(R.id.user_portrait);
-
+        overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
         showPortrait(datas[0]);
 
         userNameText = (TextView) findViewById(R.id.user_name);
@@ -78,5 +79,16 @@ public class UserDataActivity extends AppCompatActivity {
 
         }).start();
 
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+
+            this.finish();  //finish当前activity
+            overridePendingTransition(R.anim.in_from_left,
+                    R.anim.out_from_right);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
