@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //取消标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        View v =findViewById(R.id.layouts);
+        v.getBackground().setAlpha(180);
         volumeDoseText = (TextView)findViewById(R.id.volume_dose);
         lastDoseText = (TextView)findViewById(R.id.last_dose);
         lastTimeText = (TextView)findViewById(R.id.last_time);
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userDataButton.setOnClickListener(this);
         todayDataButton.setOnClickListener(this);
         rankListButton.setOnClickListener(this);
+        overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
     }
 
     public static void sendRequestWithOkHttp() {
@@ -266,6 +270,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+
+            this.finish();  //finish当前activity
+            overridePendingTransition(R.anim.in_from_left,
+                    R.anim.out_from_right);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 

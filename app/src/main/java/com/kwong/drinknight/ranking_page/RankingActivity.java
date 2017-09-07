@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.widget.ImageView;
 
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ public class RankingActivity extends AppCompatActivity {
         setContentView(R.layout.layout_ranking);
         headImage=(ImageView)findViewById(R.id.image_rank);
         recyclerView = (RecyclerView)findViewById(R.id.rank_list);
+        overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
         initPersons();
     }
 
@@ -115,6 +117,16 @@ public class RankingActivity extends AppCompatActivity {
             return bitmap;
         }
         return null;
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+
+            this.finish();  //finish当前activity
+            overridePendingTransition(R.anim.in_from_left,
+                    R.anim.out_from_right);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

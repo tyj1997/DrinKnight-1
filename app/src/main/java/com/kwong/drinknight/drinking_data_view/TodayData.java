@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -98,6 +99,7 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
         textView.setText("  饮水总量:"+drinksum+"ml");
         initView();
         setFirstChart();
+        overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
 
       //  getAxisXLables();//获取x轴的标注
      //  getAxisPoints();//获取坐标点
@@ -350,5 +352,15 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
 //        lineChartView.setLineChartData(data);
 //        lineChartView.setVisibility(View.VISIBLE);
 //    }
+@Override
+public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if(keyCode==KeyEvent.KEYCODE_BACK){
 
+        this.finish();  //finish当前activity
+        overridePendingTransition(R.anim.in_from_left,
+                R.anim.out_from_right);
+        return true;
+    }
+    return super.onKeyDown(keyCode, event);
+}
     }
