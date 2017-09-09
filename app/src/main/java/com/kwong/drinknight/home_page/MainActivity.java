@@ -139,15 +139,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String userAge;
         String userHeight;
         String userWeight ;
-        userPortrait = userData.getPortraitName();
-        Log.d("MainActivity","userPortraitName"+userPortrait);
-        userName = userData.getName();
-        userId = userData.getId();
+
+        Log.d("MainActivity","userPortraitName");
+        userName = userData.getUserName();
+        userId = userData.getAccount();
         userGender = userData.getGender();
         userAge = userData.getAge();
         userHeight = userData.getHeight();
         userWeight = userData.getWeight();
-        String[] userDatas ={userPortrait,userName,userId,userGender,userAge,userHeight,userWeight};
+        String[] userDatas ={userName,userId,userGender,userAge,userHeight,userWeight};
         Intent intent = new Intent(MainActivity.this,UserDataActivity.class);
         intent.putExtra("user_datas",userDatas);
         startActivity(intent);

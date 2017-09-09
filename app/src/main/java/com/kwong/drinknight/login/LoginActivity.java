@@ -6,9 +6,13 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Message;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -36,6 +40,14 @@ import android.widget.TextView;
 import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.R;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,12 +56,13 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>{
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -70,11 +83,42 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private CheckBox rememberPass;
+    private String name;
+    private String password;
+    private static String s;
+    private static String line;
+    private int flag;
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    showProgress(true);
+                    mAuthTask = new UserLoginTask(name, password);
+                    mAuthTask.execute((Void) null);
+                    break;
+                case 1:
+                    mEmailView.setError("账号不存在");
+                    break;
+                case 2:
+                    mEmailView.setError("密码错误");
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        s="";
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -108,12 +152,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                name= mEmailView.getText().toString();
+                password = mPasswordView.getText().toString();
+                loginRequest();
+           //     attemptLogin();
+            }
+        });
+        final Button Registers = (Button) findViewById(R.id.email_register_in_button);
+        Registers.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(LoginActivity.this,Register.class);
+                startActivity(intent);
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
     private void populateAutoComplete() {
@@ -166,62 +222,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
+        name= mEmailView.getText().toString();
+        password = mPasswordView.getText().toString();
+        if (flag==0) {
+            // perform the user login attempt.
+            showProgress(true);
+            mAuthTask = new UserLoginTask(name, password);
+            mAuthTask.execute((Void) null);
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
+
+        else if(flag==2){
+            mEmailView.setError("密码错误");
+
         }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+        else if(flag==1){
+            mEmailView.setError("账号不存在");
         }
-    }
+        s="";
+        boolean cancel = false;
+        View focusView = null;
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
-
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -382,5 +412,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+    protected void loginRequest(){
+        Thread thread =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection=null;
+                try {
+                    //用GET方法向服务器传送数据，在链接里面传值
+                    URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setReadTimeout(5000);
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("charset", "UTF-8");
+                    connection.setConnectTimeout(5000);
+                    connection.setDoInput(true);
+
+                    // Wrap a BufferedReader around the InputStream
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    // Read response until the end
+                    while ((line = rd.readLine()) != null) { s += line; }
+                    // Return full string
+                    Message message = new Message();
+                    if(s.equals("Sucess"))
+                        message.what = 0;
+                    else if(s.equals("Nonexistent Account"))
+                        message.what = 1;
+                    else if(s.equals("Wrong Password"))
+                        message.what =2;
+                    s="";
+                    handler.sendMessage(message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+        thread.start();
+    }
+
+
 }
 

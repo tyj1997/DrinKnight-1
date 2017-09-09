@@ -32,6 +32,7 @@
 
         <activity android:name=".user_data_page.UserDataActivity" />
         <activity android:name=".ranking_page.RankingActivity" />
+        <activity android:name=".login.Register" />
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
