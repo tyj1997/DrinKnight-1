@@ -144,8 +144,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             rememberPass.setChecked(true);
             //自动登录
             //showProgress(true);
-            mAuthTask = new UserLoginTask(account, password);
-            mAuthTask.execute((Void) null);
 
         }
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
@@ -398,6 +396,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editor.apply();
 
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                intent.putExtra("user_id",name);
                 startActivity(intent);
                 finish();
             } else {
@@ -419,14 +418,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 HttpURLConnection connection=null;
                 try {
                     //用GET方法向服务器传送数据，在链接里面传值
-                    URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
+                 //   URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
+
+                    URL url = new URL("http://10.8.188.98:8000/login/" + name + "/" + password);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setReadTimeout(5000);
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("charset", "UTF-8");
                     connection.setConnectTimeout(5000);
                     connection.setDoInput(true);
-
+                    connection.setRequestProperty("Accept-Encoding", "identity");
                     // Wrap a BufferedReader around the InputStream
                     BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     // Read response until the end
@@ -434,13 +435,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // Return full string
                     Message message = new Message();
                     if(s.equals("Sucess"))
-                        message.what = 0;
+                        message.what =0;
                     else if(s.equals("Nonexistent Account"))
                         message.what = 1;
                     else if(s.equals("Wrong Password"))
                         message.what =2;
                     s="";
                     handler.sendMessage(message);
+                    rd.close();
                 } catch (Exception e) {
                     e.printStackTrace();
 

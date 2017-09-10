@@ -126,6 +126,13 @@
             android:background="@drawable/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/to_drink"
+            android:text="我要喝水"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>

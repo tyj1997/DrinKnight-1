@@ -8,13 +8,13 @@ import java.util.Date;
  */
 
 public class DrinkData {
-    private String id;
+    private String account;
     private String name;
     private String time;
     private String dose;
     private String date;
-    public String getId() {
-        return id;
+    public String getAccount() {
+        return account;
     }
 
     public String getDate() {
@@ -33,8 +33,8 @@ public class DrinkData {
         return dose;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public void setName(String name) {

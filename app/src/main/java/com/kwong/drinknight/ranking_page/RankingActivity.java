@@ -111,11 +111,11 @@ public class RankingActivity extends AppCompatActivity {
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
         conn.setConnectTimeout(5000);
         conn.setRequestMethod("GET");
-        if(conn.getResponseCode() == 200){
-            InputStream inputStream = conn.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            return bitmap;
-        }
+//        if(conn.getResponseCode() == 200){
+     //       InputStream inputStream = conn.getInputStream();
+     //       Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+   //         return bitmap;
+   //     }
         return null;
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {

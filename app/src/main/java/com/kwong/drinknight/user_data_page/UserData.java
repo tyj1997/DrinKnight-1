@@ -7,14 +7,24 @@ package com.kwong.drinknight.user_data_page;
 public class UserData {
     String userName;
     String account;
+    String portrait="";
+
     String gender;
     String phoneNumber;
     String password;
     String registerTime;
-    String age;
-    String height;
-    String weight;
+    int age;
+    float height;
+    float weight;
     String emailAddress;
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
+
+    public String getPortrait() {
+
+        return portrait;
+    }
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -39,15 +49,15 @@ public class UserData {
         this.registerTime = registerTime;
     }
 
-    public void setAge(String age) {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 
@@ -80,15 +90,15 @@ public class UserData {
         return registerTime;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public String getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public String getWeight() {
+    public float getWeight() {
         return weight;
     }
 
