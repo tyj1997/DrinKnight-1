@@ -54,7 +54,7 @@ public class RankingActivity extends AppCompatActivity {
                             //.url("http://140.255.159.226:9090/ranking_data.json")
                            // .url("http://10.8.189.234/ranking_data.json")
 
-                            .url("http://192.168.56.1:8888/ranking_data.json")
+                            .url("http://10.206.13.81:8089/user/krf/rankdatas/")
                             .build();
                     Response response = client.newCall(request).execute();
                     //Log.d("RankingActivity","Response success");

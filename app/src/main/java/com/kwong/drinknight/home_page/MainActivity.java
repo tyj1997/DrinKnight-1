@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.url("http://192.168.87.2/drinking_data.json")
                             //.url("http://140.255.159.226:9090/drinking_data.json")
                             //.url("http://10.8.189.234/drinking_data.json")
-                            //.url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/9/8/")
-                            .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                            .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/")
+                           // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
 
                             .build();
                     System.out.println(id);
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Response response1 = client1.newCall(request1).execute();
 
                     String responseData1 = response1.body().string();
+                    System.out.println(responseData1);
                     drinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
                     //Log.d("MainActivity","GSON success"+drinkDataList.size());
                     //获得用户数据
@@ -160,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //.url("http://192.168.87.2/user_data.json")
                             //.url("http://140.255.159.226:9090/user_data.json")
                            // .url("http://10.8.189.234/user_data.json")
-                           // .url("http://10.206.13.81:8089/user/"+id+"/profile/#")
-                             .url("http://10.8.188.98:8000/user/"+id+"/profile/#")
+                            .url("http://10.206.13.81:8089/user/"+id+"/profile/#")
+                             //.url("http://10.8.188.98:8000/user/"+id+"/profile/#")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
@@ -238,12 +239,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String userName = new String();
         String lastDate = new String();
         userName=userData.getUserName();
+        volumeDose=0;
         //Log.d("MainActivity","handleDatas "+drinkDataList.size()+" "+drinkDataList.get(0).getDose());
             for (DrinkData oneData : drinkDataList) {
                 //Log.d("MainActivity","handleDatas "+oneData.getDose()+" "+oneData.getName()+" ");
                 lastTime = oneData.getTime();
-                lastDose = oneData.getDose();
-                volumeDose+=Float.parseFloat(oneData.getDose());
+                lastDose = String.valueOf(oneData.getDose());
+                volumeDose+=oneData.getDose();
                 //       lastDate=oneData.getDate();
 //            if(!DrinkDateTime.containsKey(lastDate)){
 //                DrinkDateTime.put(lastDate,new HashMap<String, Double>());
@@ -358,10 +360,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.today_data_bt:
                 Intent intent1 = new Intent(MainActivity.this,TodayData.class);
-                //intent1.putExtra("drink_time",DrinkingTime);
-               // intent1.putExtra("drink_dose",DrinkingDose);
-                intent1.putExtra("drink_datetime",DrinkDateTime);
-                intent1.putExtra("drink_sum",sumdrink);
+                intent1.putExtra("user_id",id);
+                System.out.println(id+"444");
                 startActivity(intent1);
                 break;
             case R.id.to_drink:
@@ -414,12 +414,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
     protected void  SentWaterinfo(final String dose){
-
+        String line;
+        String s="";
         SimpleDateFormat formatter  =  new    SimpleDateFormat    ("yyyy-MM-dd HH:mm:ss");
         Date curDate  =   new Date(System.currentTimeMillis());//获取当前时间
         String time  =  formatter.format(curDate);
-                 //   String urlPath = "http://10.206.13.81:8089/user/"+ id+"/drinkdatas";
-                 String urlPath = "http://10.8.188.98:8000/user/"+ id+"/drinkdatas/";
+                    String urlPath = "http://10.206.13.81:8089/user/"+ id+"/drinkdatas/";
+                // String urlPath = "http://10.8.188.98:8000/user/"+ id+"/drinkdatas/2017/9/10/";
                  URL urls;
                  try {
                      urls=new URL(urlPath);
@@ -442,7 +443,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      int code = conn.getResponseCode();
                      System.out.println(code);
                      System.out.println(content);
-                     System.out.println(conn.getContent().toString());
+                     BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                     // Read response until the end
+                     while ((line = rd.readLine()) != null) { s += line; }
+                     System.out.println(s);
                      if (code == 200) {
                          Toast.makeText(MainActivity.this, "喝水成功", Toast.LENGTH_SHORT).show();
                         sendRequestWithOkHttp();

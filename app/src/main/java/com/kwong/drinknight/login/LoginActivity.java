@@ -418,9 +418,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 HttpURLConnection connection=null;
                 try {
                     //用GET方法向服务器传送数据，在链接里面传值
-                 //   URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
+                    URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
 
-                    URL url = new URL("http://10.8.188.98:8000/login/" + name + "/" + password);
+                   // URL url = new URL("http://10.8.188.98:8000/login/" + name + "/" + password);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setReadTimeout(5000);
                     connection.setRequestMethod("GET");

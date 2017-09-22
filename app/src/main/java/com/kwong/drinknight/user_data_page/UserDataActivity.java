@@ -139,8 +139,8 @@ public class UserDataActivity extends AppCompatActivity {
         return true;
     }
     public void UpdateUserData(){
-        // String urlPath = "http://10.206.13.81:8089/user/"+ userIdText.getText().toString()+"/profile/#";
-        String urlPath = "http://10.8.188.98:8000/user/"+ userIdText.getText().toString()+"/profile/#";
+        String urlPath = "http://10.206.13.81:8089/user/"+ userIdText.getText().toString()+"/profile/#";
+        //String urlPath = "http://10.8.188.98:8000/user/"+ userIdText.getText().toString()+"/profile/#";
         URL urls;
         try {
             urls=new URL(urlPath);

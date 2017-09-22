@@ -11,8 +11,18 @@ public class DrinkData {
     private String account;
     private String name;
     private String time;
-    private String dose;
+    private float dose;
+
+    public float getVolume_dose() {
+        return volume_dose;
+    }
+
+    private float volume_dose;
     private String date;
+    private String month;
+
+    public String getMonth(){return month;}
+    public void setMonth(){this.month=month;}
     public String getAccount() {
         return account;
     }
@@ -29,7 +39,7 @@ public class DrinkData {
         return time;
     }
 
-    public String getDose() {
+    public float getDose() {
         return dose;
     }
 
@@ -45,7 +55,7 @@ public class DrinkData {
         this.time = time;
     }
 
-    public void setDose(String dose) {
+    public void setDose(float dose) {
         this.dose = dose;
     }
 

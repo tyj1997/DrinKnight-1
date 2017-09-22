@@ -76,9 +76,9 @@ public class Register extends AppCompatActivity {
                     Date curDate  =   new Date(System.currentTimeMillis());//获取当前时间
                     String time  =  formatter.format(curDate);
 
-                   // String urlPath = "http://10.206.13.81:8089/register/"+ UserAccount.getText().toString();
+                   String urlPath = "http://10.206.13.81:8089/register/";
 
-                    String urlPath = "  http://10.8.188.98:8000/user/"+ UserAccount.getText().toString();
+                    //String urlPath = "http://10.8.188.98:8000/register/";
                     URL urls;
                     try {
                          urls=new URL(urlPath);

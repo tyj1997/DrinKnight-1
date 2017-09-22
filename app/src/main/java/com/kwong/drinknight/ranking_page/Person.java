@@ -7,6 +7,7 @@ package com.kwong.drinknight.ranking_page;
 public class Person {
     private String id;
     private String name;
+
     private int rank;
     private String imageName;
     private int drinkVolume;

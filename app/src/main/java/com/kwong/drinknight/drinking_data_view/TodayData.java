@@ -11,8 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kwong.drinknight.R;
+import com.kwong.drinknight.home_page.DrinkData;
 
+import org.json.JSONObject;
+
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,9 +41,16 @@ import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.LineChartView;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static java.lang.Float.max;
+import static java.lang.Float.parseFloat;
 
 /**
  * Created by Administrator on 2017/8/29.
@@ -53,13 +66,13 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.TodayData:
-                setFirstChart();
-                break;
-            case R.id.WeekData:
-                setWeekChart();
+                parse_day_data();
                 break;
             case R.id.MonthData:
-               setMonthChart();
+                parse_Month_data();
+                break;
+            case R.id.YearData:
+               parse_year_data();
                 break;
             default:
                 break;
@@ -75,17 +88,28 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
     private HashMap<String,HashMap<String,Double>> DrinkDateTime = new HashMap<String,HashMap<String,Double>>();
     private List<PointValue> mPointValues = new ArrayList<PointValue>();
     private List<AxisValue> mAxisXValues = new ArrayList<AxisValue>();
+    private static  float dayDrink;
+    private static  float monthDrink;
+    private static  float yearDrink;
+    private static List<DrinkData>DaydrinkDataList;
+    private static List<DrinkData>MonthdrinkDataList;
+    private static List<DrinkData>YeardrinkDataList;
+    private  String id;
+    private TextView Title;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Intent intent=getIntent();
+        id=intent.getStringExtra("user_id");
+        System.out.println(id+"66666");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chart_data);
         Button todaydata=(Button)findViewById(R.id.TodayData);
-        Button Weekdata=(Button)findViewById(R.id.WeekData);
         Button Monthdata=(Button)findViewById(R.id.MonthData);
+        Button Yeardata=(Button)findViewById(R.id.YearData);
+        Title=(TextView)findViewById(R.id.title);
         todaydata.setOnClickListener(this);
-        Weekdata.setOnClickListener(this);
         Monthdata.setOnClickListener(this);
-        Intent intent=getIntent();
+        Yeardata.setOnClickListener(this);
        // DrinkingTime=intent.getStringArrayListExtra("drink_time");
       //  DrinkingDose=intent.getIntegerArrayListExtra("drink_dose");
         Calendar now = Calendar.getInstance();
@@ -96,9 +120,10 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
         DrinkDateTime=(HashMap)intent.getSerializableExtra("drink_datetime");
         drinksum=intent.getDoubleExtra("drink_sum",0.00);
         textView=(TextView)findViewById(R.id.textView);
-        textView.setText("  饮水总量:"+drinksum+"ml");
         initView();
-        setFirstChart();
+         parse_Month_data();
+        textView.setText("  饮水总量:"+dayDrink+"ml");
+
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
 
       //  getAxisXLables();//获取x轴的标注
@@ -110,11 +135,10 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
         chart.setZoomEnabled(false);//禁止手势缩放
     }
     private void setFirstChart() {
+        chart.setViewportCalculationEnabled(true);
         int numSubcolumns = 1;
-        if(DrinkDateTime!=null&&DrinkDateTime.get(today)!=null) {
-            int numColumns = DrinkDateTime.get(today).size();
-            Set<String> keys = DrinkDateTime.get(today).keySet();
-            Iterator iterator = keys.iterator();
+        if(DaydrinkDataList!=null) {
+            int numColumns = DaydrinkDataList.size();
             //定义一个圆柱对象集合
             List<Column> columns = new ArrayList<Column>();
             //子列数据集合
@@ -122,13 +146,13 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
 
             List<AxisValue> axisValues = new ArrayList<AxisValue>();
             //遍历列数numColumns
-            for (String Drinktime : keys) {
+            for (DrinkData oneData : DaydrinkDataList) {
 
                 values = new ArrayList<SubcolumnValue>();
                 //遍历每一列的每一个子列
                 for (int j = 0; j < numSubcolumns; ++j) {
                     //为每一柱图添加颜色和数值
-                    float f = (float) DrinkDateTime.get(today).get(Drinktime).doubleValue();
+                    float f = oneData.getDose();
                     values.add(new SubcolumnValue(f, ChartUtils.pickColor()));
                 }
                 Column column = new Column(values);
@@ -140,7 +164,7 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
                 column.setHasLabelsOnlyForSelected(true);
                 columns.add(column);
                 //给x轴坐标设置描述
-                axisValues.add(new AxisValue(Xcount++).setLabel(Drinktime));
+                axisValues.add(new AxisValue(Xcount++).setLabel(oneData.getTime().substring(oneData.getTime().indexOf(" ")+1)));
             }
             Xcount = 0;
             data = new ColumnChartData(columns);
@@ -160,85 +184,32 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
             data.setAxisXBottom(axisX);
             data.setAxisYLeft(axisY);
             //给表填充数据，显示出来
-            chart.setColumnChartData(data);
             chart.startDataAnimation(2000);
+            chart.setColumnChartData(data);
+
+               chart.setViewportCalculationEnabled(false);
+            final Viewport v = new Viewport(chart.getMaximumViewport());
+////        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+           v.left = (float)-0.5;
+            v.right= 5;
+            chart.setCurrentViewport(v);
+//
+////        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+//
+            final Viewport maxV=new Viewport(chart.getMaximumViewport());
+           maxV.left=(float)-0.5;
+            maxV.right=DaydrinkDataList.size();
+            chart.setMaximumViewport(maxV);
+            Title.setText("日饮水数据");
+            textView.setText("  饮水总量:"+dayDrink+"ml");
         }
     }
-    private void setWeekChart(){
-        Calendar c = Calendar.getInstance();
-       c.add(Calendar.DAY_OF_MONTH,-6);
-        Date date = c.getTime();
-        String WeekBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
-        int numSubcolumns = 1;
-        if(DrinkDateTime!=null) {
-            int numColumns = 7;
-            //定义一个圆柱对象集合
-            List<Column> columns = new ArrayList<Column>();
-            //子列数据集合
-            List<SubcolumnValue> values;
 
-            List<AxisValue> axisValues = new ArrayList<AxisValue>();
-            //遍历列数numColumns
-            for (int i=0;i<7;i++) {
-
-                float f=0;
-                values = new ArrayList<SubcolumnValue>();
-                //遍历每一列的每一个子列
-                if(DrinkDateTime.get(WeekBefore)!=null) {
-                    Set<String> key = DrinkDateTime.get(WeekBefore).keySet();
-                        for (String Drinktime : key) {
-                            f += (float) DrinkDateTime.get(WeekBefore).get(Drinktime).doubleValue();
-                        }
-                    values.add(new SubcolumnValue(f/1000, ChartUtils.pickColor()));
-                }
-                else
-                    values.add(new SubcolumnValue(0, ChartUtils.pickColor()));
-                Column column = new Column(values);
-                ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
-                column.setFormatter(chartValueFormatter);
-                //是否有数据标注
-                column.setHasLabels(false);
-                //是否是点击圆柱才显示数据标注
-                column.setHasLabelsOnlyForSelected(true);
-                columns.add(column);
-                //给x轴坐标设置描述
-                axisValues.add(new AxisValue(Xcount++).setLabel((c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH)));
-                c.add(Calendar.DAY_OF_MONTH,1);
-                WeekBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
-            }
-            Xcount = 0;
-            data = new ColumnChartData(columns);
-
-            //定义x轴y轴相应参数
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            axisY.setName("饮水量(L)");//轴名称
-            axisX.setName("时间");
-            axisY.hasLines();//是否显示网格线
-            axisY.setTextColor(R.color.blue);//颜色
-
-            axisX.hasLines();
-            axisX.setTextColor(R.color.blue);
-            axisX.setValues(axisValues);
-            //把X轴Y轴数据设置到ColumnChartData 对象中
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-            //给表填充数据，显示出来
-            chart.setColumnChartData(data);
-            chart.startDataAnimation(2000);
-        }
-    }
     private void setMonthChart(){
-        Calendar c = Calendar.getInstance();
-        int numColumns = c.get(Calendar.DAY_OF_MONTH);
-        System.out.println(numColumns);
-        c.add(Calendar.DAY_OF_MONTH,-c.get(Calendar.DAY_OF_MONTH)+1);
-        Date date = c.getTime();
-        String MonthBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
-        System.out.println(MonthBefore);
+        chart.setViewportCalculationEnabled(true);
         int numSubcolumns = 1;
-        if(DrinkDateTime!=null) {
-
+        if(MonthdrinkDataList!=null) {
+            int numColumns = MonthdrinkDataList.size();
             //定义一个圆柱对象集合
             List<Column> columns = new ArrayList<Column>();
             //子列数据集合
@@ -246,37 +217,26 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
 
             List<AxisValue> axisValues = new ArrayList<AxisValue>();
             //遍历列数numColumns
-            for (int i=1;i<=numColumns;i++) {
+            for (DrinkData oneData : MonthdrinkDataList) {
 
-                float f=0;
                 values = new ArrayList<SubcolumnValue>();
                 //遍历每一列的每一个子列
-                if(DrinkDateTime.get(MonthBefore)!=null) {
-                    Set<String> key = DrinkDateTime.get(MonthBefore).keySet();
-                    for (String Drinktime : key) {
-                        f += (float) DrinkDateTime.get(MonthBefore).get(Drinktime).doubleValue();
-                    }
+                for (int j = 0; j < numSubcolumns; ++j) {
+                    //为每一柱图添加颜色和数值
+                    float f = oneData.getDose();
                     values.add(new SubcolumnValue(f/1000, ChartUtils.pickColor()));
                 }
-                else
-                    values.add(new SubcolumnValue(0, ChartUtils.pickColor()));
                 Column column = new Column(values);
                 ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
                 column.setFormatter(chartValueFormatter);
                 //是否有数据标注
                 column.setHasLabels(false);
                 //是否是点击圆柱才显示数据标注
+
                 column.setHasLabelsOnlyForSelected(true);
                 columns.add(column);
                 //给x轴坐标设置描述
-                System.out.println(c.get(Calendar.DAY_OF_MONTH)%7);
-              if((c.get(Calendar.DAY_OF_MONTH)%7)==1)
-                  axisValues.add(new AxisValue(Xcount++).setLabel((c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH)));
-
-                    else
-                    axisValues.add(new AxisValue(Xcount++).setLabel(""));
-                c.add(Calendar.DAY_OF_MONTH,1);
-                MonthBefore=c.get(Calendar.YEAR)+"/"+(c.get(Calendar.MONTH) + 1)+"/"+c.get(Calendar.DAY_OF_MONTH);
+                axisValues.add(new AxisValue(Xcount++).setLabel(oneData.getDate().substring(oneData.getDate().indexOf("-")+1)));
             }
             Xcount = 0;
             data = new ColumnChartData(columns);
@@ -288,7 +248,7 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
             axisX.setName("时间");
             axisY.hasLines();//是否显示网格线
             axisY.setTextColor(R.color.blue);//颜色
-            axisX.setMaxLabelChars(1);
+            axisX.setMaxLabelChars(6);
             axisX.hasLines();
             axisX.setTextColor(R.color.blue);
             axisX.setValues(axisValues);
@@ -297,9 +257,100 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
             data.setAxisYLeft(axisY);
             //给表填充数据，显示出来
             chart.setColumnChartData(data);
-            chart.startDataAnimation();
+            chart.startDataAnimation(2000);
+
+           chart.setViewportCalculationEnabled(false);
+            final Viewport v = new Viewport(chart.getMaximumViewport());
+////        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+           v.left = (float)-0.5;
+            v.right= 5;
+           chart.setCurrentViewport(v);
+//
+////        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+//
+            final Viewport maxV=new Viewport(chart.getMaximumViewport());
+            maxV.left=(float)-0.5;
+           maxV.right=MonthdrinkDataList.size();
+            chart.setMaximumViewport(maxV);
+            Title.setText("月饮水数据");
+            textView.setText("  饮水总量:"+dayDrink/1000+"L");
         }
     }
+    private void setYearChart(){
+        chart.setViewportCalculationEnabled(true);
+        int numSubcolumns = 1;
+        if(YeardrinkDataList!=null) {
+            int numColumns = YeardrinkDataList.size();
+            //定义一个圆柱对象集合
+            List<Column> columns = new ArrayList<Column>();
+            //子列数据集合
+            List<SubcolumnValue> values;
+
+            List<AxisValue> axisValues = new ArrayList<AxisValue>();
+            //遍历列数numColumns
+            for (DrinkData oneData : YeardrinkDataList) {
+
+                values = new ArrayList<SubcolumnValue>();
+                //遍历每一列的每一个子列
+                for (int j = 0; j < numSubcolumns; ++j) {
+                    //为每一柱图添加颜色和数值
+                    float f = oneData.getVolume_dose();
+                    values.add(new SubcolumnValue(f/1000, ChartUtils.pickColor()));
+                }
+                Column column = new Column(values);
+                ColumnChartValueFormatter chartValueFormatter = new SimpleColumnChartValueFormatter(2);
+                column.setFormatter(chartValueFormatter);
+                //是否有数据标注
+                column.setHasLabels(false);
+                //是否是点击圆柱才显示数据标注
+                column.setHasLabelsOnlyForSelected(true);
+                columns.add(column);
+                //给x轴坐标设置描述
+                axisValues.add(new AxisValue(Xcount++).setLabel(oneData.getMonth()));
+            }
+            Xcount = 0;
+            data = new ColumnChartData(columns);
+
+            //定义x轴y轴相应参数
+            Axis axisX = new Axis();
+            Axis axisY = new Axis().setHasLines(true);
+            axisY.setName("饮水量(L)");//轴名称
+            axisX.setName("时间");
+            axisY.hasLines();//是否显示网格线
+            axisY.setTextColor(R.color.blue);//颜色
+
+            axisX.hasLines();
+            axisX.setTextColor(R.color.blue);
+            axisX.setValues(axisValues);
+            //把X轴Y轴数据设置到ColumnChartData 对象中
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+            int maxnum=YeardrinkDataList.size()>5? YeardrinkDataList.size():5;
+            data.setFillRatio(0.2F);
+            //给表填充数据，显示出来
+            chart.setColumnChartData(data);
+            chart.startDataAnimation(2000);
+//
+
+            chart.setViewportCalculationEnabled(false);
+            final Viewport v = new Viewport(chart.getMaximumViewport());
+////        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+            v.left = (float)-0.5;
+            v.right= 5;
+            chart.setCurrentViewport(v);
+//        Log.e(TAG, "onCreate: "+v.left+"#"+v.top+"#"+v.right+"$"+v.bottom );
+
+            final Viewport maxV=new Viewport(chart.getMaximumViewport());
+            maxV.left=(float)-0.5;
+            maxV.right=maxnum;
+            chart.setMaximumViewport(maxV);
+
+            Title.setText("年饮水数据");
+            textView.setText("  饮水总量:"+dayDrink/1000+"L");
+
+        }
+    }
+
     private void getAxisXLables(){
         for (int i = 0; i <DrinkingTime.size() ;i++) {
             mAxisXValues.add(new AxisValue(i).setLabel( DrinkingTime.get(i)));
@@ -363,4 +414,82 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
     }
     return super.onKeyDown(keyCode, event);
 }
+protected void parse_day_data(){
+    try {
+        OkHttpClient client1 = new OkHttpClient();
+        Request request1 = new Request.Builder()
+                //.url("http://192.168.87.2/drinking_data.json")
+                //.url("http://140.255.159.226:9090/drinking_data.json")
+                //.url("http://10.8.189.234/drinking_data.json")
+                .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/9/20/")
+                // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                .build();
+        Response response1 = client1.newCall(request1).execute();
+        String responseData1 = response1.body().string();
+        System.out.println(responseData1);
+        DaydrinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
+
+        setFirstChart();
+    }
+    catch (Exception e){
+        e.printStackTrace();
+    }
+}
+    private static List parseJSONWithGSONtoDrinkData(String jsonData) {
+        Gson gson = new Gson();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            dayDrink=parseFloat(jsonObject.getString("volume_dose"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        List<DrinkData> drinkDatas = gson.fromJson(jsonData.substring(jsonData.indexOf("["),jsonData.lastIndexOf("}")), new TypeToken<List<DrinkData>>(){}.getType());
+
+        return drinkDatas;
+    }
+    protected void parse_Month_data(){
+        try {
+            OkHttpClient client1 = new OkHttpClient();
+            Request request1 = new Request.Builder()
+                    //.url("http://192.168.87.2/drinking_data.json")
+                    //.url("http://140.255.159.226:9090/drinking_data.json")
+                    //.url("http://10.8.189.234/drinking_data.json")
+                    .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/9/")
+                    // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                    .build();
+            Response response1 = client1.newCall(request1).execute();
+            String responseData1 = response1.body().string();
+            System.out.println(responseData1);
+            MonthdrinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
+
+            setMonthChart();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void parse_year_data(){
+        try {
+            OkHttpClient client1 = new OkHttpClient();
+            Request request1 = new Request.Builder()
+                    //.url("http://192.168.87.2/drinking_data.json")
+                    //.url("http://140.255.159.226:9090/drinking_data.json")
+                    //.url("http://10.8.189.234/drinking_data.json")
+                    .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/")
+                    // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                    .build();
+            Response response1 = client1.newCall(request1).execute();
+            String responseData1 = response1.body().string();
+            System.out.println(responseData1);
+            YeardrinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
+
+            setYearChart();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     }
