@@ -75,9 +75,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
                 }
             }).start();
 
-            holder.personName.setText(person.getName());
-            holder.personVolume.setText(String.valueOf(person.getDrinkVolume()));
-            holder.personRank.setText(String.valueOf(person.getRank()));
+            holder.personName.setText(person.getAccount());
+            holder.personVolume.setText(String.valueOf(person.getDose()));
+
         }catch (Exception e){
             e.printStackTrace();
         }

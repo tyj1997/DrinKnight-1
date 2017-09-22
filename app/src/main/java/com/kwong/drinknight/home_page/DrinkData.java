@@ -8,13 +8,23 @@ import java.util.Date;
  */
 
 public class DrinkData {
-    private String id;
+    private String account;
     private String name;
     private String time;
-    private String dose;
+    private float dose;
+
+    public float getVolume_dose() {
+        return volume_dose;
+    }
+
+    private float volume_dose;
     private String date;
-    public String getId() {
-        return id;
+    private String month;
+
+    public String getMonth(){return month;}
+    public void setMonth(){this.month=month;}
+    public String getAccount() {
+        return account;
     }
 
     public String getDate() {
@@ -29,12 +39,12 @@ public class DrinkData {
         return time;
     }
 
-    public String getDose() {
+    public float getDose() {
         return dose;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public void setName(String name) {
@@ -45,7 +55,7 @@ public class DrinkData {
         this.time = time;
     }
 
-    public void setDose(String dose) {
+    public void setDose(float dose) {
         this.dose = dose;
     }
 

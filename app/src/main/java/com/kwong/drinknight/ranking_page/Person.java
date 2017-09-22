@@ -7,16 +7,27 @@ package com.kwong.drinknight.ranking_page;
 public class Person {
     private String id;
     private String name;
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getAccount() {
+
+        return account;
+    }
+
+    private String account;
     private int rank;
     private String imageName;
-    private int drinkVolume;
+    private int dose;
 
-    public Person(int rank, String id, String name, String imageName, int drinkVolume) {
+    public Person(int rank, String id, String name, String imageName, int dose) {
         this.rank = rank;
         this.id = id;
         this.name = name;
         this.imageName = imageName;
-        this.drinkVolume = drinkVolume;
+        this.dose = dose;
     }
 
     public int getRank() {
@@ -35,8 +46,8 @@ public class Person {
         return imageName;
     }
 
-    public int getDrinkVolume() {
-        return drinkVolume;
+    public int getDose() {
+        return dose;
     }
 
 }

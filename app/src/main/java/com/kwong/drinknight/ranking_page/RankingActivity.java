@@ -54,7 +54,7 @@ public class RankingActivity extends AppCompatActivity {
                             //.url("http://140.255.159.226:9090/ranking_data.json")
                            // .url("http://10.8.189.234/ranking_data.json")
 
-                            .url("http://192.168.56.1:8888/ranking_data.json")
+                            .url("http://10.206.13.81:8089/user/krf/rankdatas/")
                             .build();
                     Response response = client.newCall(request).execute();
                     //Log.d("RankingActivity","Response success");
@@ -111,11 +111,11 @@ public class RankingActivity extends AppCompatActivity {
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
         conn.setConnectTimeout(5000);
         conn.setRequestMethod("GET");
-        if(conn.getResponseCode() == 200){
-            InputStream inputStream = conn.getInputStream();
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            return bitmap;
-        }
+//        if(conn.getResponseCode() == 200){
+     //       InputStream inputStream = conn.getInputStream();
+     //       Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+   //         return bitmap;
+   //     }
         return null;
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {

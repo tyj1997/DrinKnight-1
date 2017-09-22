@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
        android:layout_height="wrap_content"
         android:layout_weight="0.05"
+        android:id="@+id/title"
         android:textSize="24dp"
         android:text="当日饮水数据"
         android:gravity="center"
@@ -23,35 +24,43 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_weight="0.05"
         android:textSize="24dp"
         android:text="TextView" />
 
     <LinearLayout
-        android:layout_gravity="center"
+        android:layout_weight="0.2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
         <Button
             android:id="@+id/TodayData"
-            android:text="当天数据"
+            android:layout_gravity="bottom"
             android:layout_width="wrap_content"
-            android:background="@drawable/button"
+            android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:layout_height="wrap_content" />
-        <Button
-            android:id="@+id/WeekData"
-            android:text="周数据"
-            android:layout_width="wrap_content"
             android:background="@drawable/button"
-            android:layout_marginRight="10dp"
-            android:layout_height="wrap_content" />
+            android:text="当天数据" />
+
         <Button
             android:id="@+id/MonthData"
-            android:text="月数据"
-            android:background="@drawable/button"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginRight="10dp"
-            android:layout_height="wrap_content" />
+            android:background="@drawable/button"
+            android:text="月数据" />
+
+        <Button
+            android:id="@+id/YearData"
+            android:layout_width="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button"
+            android:text="年数据" />
     </LinearLayout>
 
 </LinearLayout>

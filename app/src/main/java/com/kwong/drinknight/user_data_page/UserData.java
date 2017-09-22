@@ -5,67 +5,104 @@ package com.kwong.drinknight.user_data_page;
  */
 
 public class UserData {
-    String name;
-    String id;
+    String userName;
+    String account;
+    String portrait="";
+
     String gender;
-    String age;
-    String height;
-    String weight;
-    String portraitName;
-
-    public String getPortraitName() {
-        return portraitName;
+    String phoneNumber;
+    String password;
+    String registerTime;
+    int age;
+    float height;
+    float weight;
+    String emailAddress;
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
     }
 
-    public void setPortraitName(String portraitName) {
-        this.portraitName = portraitName;
+    public String getPortrait() {
+
+        return portrait;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getGender() {
-        return gender;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public String getAge() {
-        return age;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public void setAge(String age) {
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRegisterTime(String registerTime) {
+        this.registerTime = registerTime;
+    }
+
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public String getWeight() {
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getUserName() {
+
+        return userName;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRegisterTime() {
+        return registerTime;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
-        this.weight = weight;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 }
