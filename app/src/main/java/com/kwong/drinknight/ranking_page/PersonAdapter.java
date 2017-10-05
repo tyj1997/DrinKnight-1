@@ -13,9 +13,11 @@ import android.widget.TextView;
 import java.util.List;
 import android.os.Handler;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.kwong.drinknight.R;
-
-import static com.kwong.drinknight.ranking_page.RankingActivity.getBitmap;
+import com.kwong.drinknight.utils.MyApplication;
+import static com.kwong.drinknight.utils.Global.SERVER_URL;
 
 /**
  * Created by 锐锋 on 2017/8/25.
@@ -58,22 +60,12 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
             public void handleMessage(Message msg){
                holder.personImage.setImageBitmap((Bitmap) msg.obj);
             }
-        };
+        } ;
         try {
             final Person person = mPersonList.get(position);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{
-                        Message message = new Message();
-                        Bitmap bitmap = getBitmap("http://192.168.87.2/image/" + person.getImageName());
-                        message.obj = bitmap;
-                        handler.sendMessage(message);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+
+
+            Glide.with(MyApplication.getContext()).load(SERVER_URL + "/media/images/" + person.getAccount() + ".jpg").error(R.mipmap.ic_launcher).into(holder.personImage);
 
             holder.personName.setText(person.getAccount());
             holder.personVolume.setText(String.valueOf(person.getDose()));

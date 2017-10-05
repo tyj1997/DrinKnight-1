@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent pi = PendingIntent.getActivity(context,0,i,0);
         Notification builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_water)
                 .setTicker("您有一段时间没有喝水啦！")
                 .setContentIntent(pi)
                 .setContentTitle("该喝水了")

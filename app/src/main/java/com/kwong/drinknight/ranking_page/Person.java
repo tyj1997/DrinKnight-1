@@ -22,6 +22,7 @@ public class Person {
     private String imageName;
     private int dose;
 
+
     public Person(int rank, String id, String name, String imageName, int dose) {
         this.rank = rank;
         this.id = id;

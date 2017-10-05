@@ -5,10 +5,9 @@ package com.kwong.drinknight.user_data_page;
  */
 
 public class UserData {
+
     String userName;
     String account;
-    String portrait="";
-
     String gender;
     String phoneNumber;
     String password;
@@ -17,14 +16,18 @@ public class UserData {
     float height;
     float weight;
     String emailAddress;
-    public void setPortrait(String portrait) {
-        this.portrait = portrait;
+    String imageName;
+    public UserData(){}
+    public String getImageName() {
+        return imageName;
     }
 
-    public String getPortrait() {
-
-        return portrait;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
+
+
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

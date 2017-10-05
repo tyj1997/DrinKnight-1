@@ -5,12 +5,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.NavigationMenu;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -18,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kwong.drinknight.R;
@@ -49,10 +59,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.kwong.drinknight.utils.Global.SERVER_URL;
 import static java.lang.Float.parseFloat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -75,25 +87,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String id;
     public static double sumdrink;
     public static  float volumeDose = 0;
-    Intent intent;
-    private Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                   ;
-                    break;
-                case 1:
 
-                    break;
-                case 2:
+    public DrawerLayout mDrawerLayout;
+    public CircleImageView userimage;
+    Intent intent1;
 
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         id=intent.getStringExtra("user_id");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        View v =findViewById(R.id.layouts);
+
+        View v =findViewById(R.id.drawer_layout);
         v.getBackground().setAlpha(180);
         volumeDoseText = (TextView)findViewById(R.id.volume_dose);
         lastDoseText = (TextView)findViewById(R.id.last_dose);
@@ -114,19 +113,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         sendRequestWithOkHttp();
         mSinkingView = (MySinkingView) findViewById(R.id.sinking);
-        intent = new Intent(this, NotifyService.class);
+        intent1 = new Intent(this, NotifyService.class);
         //开启关闭Service
-        startService(intent);
+        startService(intent1);
         //设置一个Toast来提醒使用者提醒的功能已经开始
         Toast.makeText(MainActivity.this,"提醒喝水的功能已经开启",Toast.LENGTH_SHORT).show();
-        Button userDataButton = (Button)findViewById(R.id.user_data_bt);
-        Button todayDataButton = (Button)findViewById(R.id.today_data_bt);
-        Button rankListButton = (Button)findViewById(R.id.rank_list_bt);
-        Button toDrinkButton=(Button)findViewById(R.id.to_drink);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+
+        NavigationView navView = (NavigationView)findViewById(R.id.nav_view);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
+        navView.setCheckedItem(R.id.nav_drink_data);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                mDrawerLayout.closeDrawers();
+                switch (item.getItemId()){
+                    case R.id.nav_drink_data:
+                        Intent intent1 = new Intent(MainActivity.this,TodayData.class);
+                        intent1.putExtra("user_id",id);
+                        startActivity(intent1);
+                        break;
+                    case R.id.nav_user_data:
+                        showUserData(userData);
+                        break;
+                    case R.id.nav_rank:
+                        Intent intent = new Intent(MainActivity.this,RankingActivity.class);
+                        startActivity(intent);
+                        break;
+                    default:
+                }
+                return true;
+            }
+        });
+
+        FloatingActionButton toDrinkButton=(FloatingActionButton)findViewById(R.id.to_drink);
         toDrinkButton.setOnClickListener(this);
-        userDataButton.setOnClickListener(this);
-        todayDataButton.setOnClickListener(this);
-        rankListButton.setOnClickListener(this);
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
     }
 
@@ -139,11 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //获得当天饮水数据
                     OkHttpClient client1 = new OkHttpClient();
                     Request request1 = new Request.Builder()
-                            //.url("http://192.168.87.2/drinking_data.json")
-                            //.url("http://140.255.159.226:9090/drinking_data.json")
-                            //.url("http://10.8.189.234/drinking_data.json")
-                            .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/")
-                           // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                            .url(SERVER_URL+"/user/"+id+"/drinkdatas/#")
 
                             .build();
                     System.out.println(id);
@@ -158,16 +183,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     OkHttpClient client2 = new OkHttpClient();
                     Request request2 = new Request.Builder()
-                            //.url("http://192.168.87.2/user_data.json")
-                            //.url("http://140.255.159.226:9090/user_data.json")
-                           // .url("http://10.8.189.234/user_data.json")
-                            .url("http://10.206.13.81:8089/user/"+id+"/profile/#")
-                             //.url("http://10.8.188.98:8000/user/"+id+"/profile/#")
+                            .url(SERVER_URL+"/user/"+id+"/profile/#")
                             .build();
                     //Log.d("MainActivity","request2 success");
                     Response response2 = client2.newCall(request2).execute();
                     String responseData2 = response2.body().string();
                     userData = parseJSONWithGSONtoUserData(responseData2);
+
                     //Log.d("MainActivity","GSON2 success"+userData.getName());
                     Activity a = (Activity)volumeDoseText.getContext();
                     handleDatas(a,drinkDataList,userData);
@@ -183,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void showUserData(UserData userData) {
         String userName;
         String account;
-        String potrait;
+        String imageName;
         String phoneNumber;
         String emailAddress;
         String registerTime;
@@ -194,17 +216,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.d("MainActivity","userPortraitName");
         userName = userData.getUserName();
-
+        imageName = userData.getImageName();
         account = userData.getAccount();
         gender = userData.getGender();
-        potrait=userData.getPortrait();
+
         userAge = userData.getAge();
         userHeight = userData.getHeight();
         userWeight = userData.getWeight();
         phoneNumber=userData.getPhoneNumber();
         emailAddress=userData.getEmailAddress();
         registerTime=userData.getRegisterTime();
-        String[] userDatas ={potrait,userName,account,gender,String.valueOf(userAge),String.valueOf(userHeight),String.valueOf(userWeight),phoneNumber,emailAddress,registerTime};
+        String[] userDatas ={userName,account,gender,String.valueOf(userAge),String.valueOf(userHeight),String.valueOf(userWeight),phoneNumber,emailAddress,registerTime,imageName};
         Intent intent = new Intent(MainActivity.this,UserDataActivity.class);
         intent.putExtra("user_datas",userDatas);
         startActivityForResult(intent,1);
@@ -341,29 +363,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
+        stopService(intent1);
         super.onDestroy();
-        //在Activity被关闭后，关闭Service
-        stopService(intent);
+
+
     }
 
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                userimage = (CircleImageView)findViewById(R.id.icon_image);
+                Glide.with(MainActivity.this).load(SERVER_URL+"/media/"+userData.getImageName()).error(R.mipmap.ic_launcher).into(userimage);
+                break;
+            default:
+        }
+        return true;
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.user_data_bt:
-                showUserData(userData);
-
-                break;
-            case R.id.rank_list_bt:
-                Intent intent = new Intent(MainActivity.this,RankingActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.today_data_bt:
-                Intent intent1 = new Intent(MainActivity.this,TodayData.class);
-                intent1.putExtra("user_id",id);
-                System.out.println(id+"444");
-                startActivity(intent1);
-                break;
             case R.id.to_drink:
                 System.out.println("6666");
                 getWater();
@@ -419,8 +441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SimpleDateFormat formatter  =  new    SimpleDateFormat    ("yyyy-MM-dd HH:mm:ss");
         Date curDate  =   new Date(System.currentTimeMillis());//获取当前时间
         String time  =  formatter.format(curDate);
-                    String urlPath = "http://10.206.13.81:8089/user/"+ id+"/drinkdatas/";
-                // String urlPath = "http://10.8.188.98:8000/user/"+ id+"/drinkdatas/2017/9/10/";
+                    String urlPath = SERVER_URL+"/user/"+ id+"/drinkdatas/";
                  URL urls;
                  try {
                      urls=new URL(urlPath);

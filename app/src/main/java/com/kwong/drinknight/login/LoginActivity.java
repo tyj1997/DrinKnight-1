@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static com.kwong.drinknight.utils.Global.SERVER_URL;
 
 /**
  * A login screen that offers login via email/password.
@@ -418,9 +419,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 HttpURLConnection connection=null;
                 try {
                     //用GET方法向服务器传送数据，在链接里面传值
-                    URL url = new URL("http://10.206.13.81:8089/login/" + name + "/" + password);
-
-                   // URL url = new URL("http://10.8.188.98:8000/login/" + name + "/" + password);
+                    URL url = new URL(SERVER_URL+"/login/" + name + "/" + password);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setReadTimeout(5000);
                     connection.setRequestMethod("GET");
@@ -434,7 +433,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     while ((line = rd.readLine()) != null) { s += line; }
                     // Return full string
                     Message message = new Message();
-                    if(s.equals("Sucess"))
+                    if(s.equals("Success"))
                         message.what =0;
                     else if(s.equals("Nonexistent Account"))
                         message.what = 1;

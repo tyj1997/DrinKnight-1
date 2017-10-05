@@ -49,6 +49,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.kwong.drinknight.utils.Global.SERVER_URL;
 import static java.lang.Float.max;
 import static java.lang.Float.parseFloat;
 
@@ -61,7 +62,10 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
 
     private ColumnChartData data;
     private double drinksum;
-
+    private Calendar c = Calendar.getInstance();
+    private String year = String.valueOf(c.get(Calendar.YEAR));
+    private String month = String.valueOf(c.get(Calendar.MONTH)+1);
+    private String day = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -121,7 +125,7 @@ public class TodayData extends AppCompatActivity implements View.OnClickListener
         drinksum=intent.getDoubleExtra("drink_sum",0.00);
         textView=(TextView)findViewById(R.id.textView);
         initView();
-         parse_Month_data();
+         parse_day_data();;
         textView.setText("  饮水总量:"+dayDrink+"ml");
 
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
@@ -416,13 +420,10 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 }
 protected void parse_day_data(){
     try {
+
         OkHttpClient client1 = new OkHttpClient();
         Request request1 = new Request.Builder()
-                //.url("http://192.168.87.2/drinking_data.json")
-                //.url("http://140.255.159.226:9090/drinking_data.json")
-                //.url("http://10.8.189.234/drinking_data.json")
-                .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/9/20/")
-                // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                .url(SERVER_URL+"/user/"+id+"/drinkdatas/"+year+"/"+month+"/"+day+"/")
                 .build();
         Response response1 = client1.newCall(request1).execute();
         String responseData1 = response1.body().string();
@@ -453,11 +454,7 @@ protected void parse_day_data(){
         try {
             OkHttpClient client1 = new OkHttpClient();
             Request request1 = new Request.Builder()
-                    //.url("http://192.168.87.2/drinking_data.json")
-                    //.url("http://140.255.159.226:9090/drinking_data.json")
-                    //.url("http://10.8.189.234/drinking_data.json")
-                    .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/9/")
-                    // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                    .url(SERVER_URL+"/user/"+id+"/drinkdatas/"+year+"/"+month+"/")
                     .build();
             Response response1 = client1.newCall(request1).execute();
             String responseData1 = response1.body().string();
@@ -474,11 +471,7 @@ protected void parse_day_data(){
         try {
             OkHttpClient client1 = new OkHttpClient();
             Request request1 = new Request.Builder()
-                    //.url("http://192.168.87.2/drinking_data.json")
-                    //.url("http://140.255.159.226:9090/drinking_data.json")
-                    //.url("http://10.8.189.234/drinking_data.json")
-                    .url("http://10.206.13.81:8089/user/"+id+"/drinkdatas/2017/")
-                    // .url("http://10.8.188.98:8000/user/"+id+"/drinkdatas/2017/9/10/")
+                    .url(SERVER_URL+"/user/"+id+"/drinkdatas/"+year+"/")
                     .build();
             Response response1 = client1.newCall(request1).execute();
             String responseData1 = response1.body().string();
