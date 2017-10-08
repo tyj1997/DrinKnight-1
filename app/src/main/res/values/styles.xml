@@ -12,6 +12,7 @@
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
 
     </style>
     <style name="drinkDatasName">
@@ -25,6 +26,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="drinkDatas">
         <item name="android:textSize">18sp</item>

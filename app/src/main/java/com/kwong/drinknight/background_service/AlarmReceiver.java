@@ -11,8 +11,9 @@ import android.util.Log;
 
 import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.R;
+import com.kwong.drinknight.utils.UpdateAll;
 
-import static com.kwong.drinknight.home_page.MainActivity.sendRequestWithOkHttp;
+
 public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
@@ -30,7 +31,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .build();
         manager.notify(1,builder);
         Log.d("AlarmReceiver","onReceive is executed");
-        sendRequestWithOkHttp();
+
+        UpdateAll.UpdateTask updateTask = new UpdateAll.UpdateTask();
+        updateTask.execute((Void)null);
+
         //再次开启NotifyService这个服务，从而可以
         Intent in = new Intent(context, NotifyService.class);
         context.startService(in);

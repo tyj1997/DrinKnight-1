@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -57,15 +58,15 @@ import static com.kwong.drinknight.utils.Global.SERVER_URL;
 public class UserDataActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageView userPortrait;
-    private EditText userNameText;
-    private EditText userGenderText;
-    private EditText userIdText;
-    private EditText userAgeText;
-    private EditText userHeightText;
-    private EditText userWeightText;
-    private EditText userPhoneNumberText;
-    private EditText userEmailText;
-    private EditText userRegisterTimeText;
+    private TextView userNameText;
+    private TextView userGenderText;
+    private TextView userIdText;
+    private TextView userAgeText;
+    private TextView userHeightText;
+    private TextView userWeightText;
+    private TextView userPhoneNumberText;
+    private TextView userEmailText;
+    private TextView userRegisterTimeText;
 
     public static final int TAKE_PHOTO = 1;
     public static final int FROM_ALBUM =0;
@@ -73,7 +74,7 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
     private Uri imageUri;
     private  String imagePath;
 
-    private String imageUrl =SERVER_URL+"/media/";
+    private String imageUrl =SERVER_URL+"/user/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,25 +84,25 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
         String[] datas = intent.getStringArrayExtra("user_datas");
         userPortrait = (ImageView) findViewById(R.id.user_portrait);
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
-        userNameText = (EditText) findViewById(R.id.user_name);
+        userNameText = (TextView) findViewById(R.id.user_name);
         userNameText.setText(datas[0]);
-        userIdText = (EditText) findViewById(R.id.user_id);
+        userIdText = (TextView) findViewById(R.id.user_id);
         userIdText.setText(datas[1]);
         userIdText.setFocusable(false);
         userIdText.setFocusableInTouchMode(false);
-        userGenderText = (EditText) findViewById(R.id.user_gender);
+        userGenderText = (TextView) findViewById(R.id.user_gender);
         userGenderText.setText(datas[2]);
-        userAgeText = (EditText) findViewById(R.id.user_age);
+        userAgeText = (TextView) findViewById(R.id.user_age);
         userAgeText.setText(datas[3]);
-        userHeightText = (EditText) findViewById(R.id.user_height);
+        userHeightText = (TextView) findViewById(R.id.user_height);
         userHeightText.setText(datas[4]);
-        userWeightText = (EditText) findViewById(R.id.user_weight);
+        userWeightText = (TextView) findViewById(R.id.user_weight);
         userWeightText.setText(datas[5]);
-        userPhoneNumberText=(EditText) findViewById(R.id.user_phonenumber);
+        userPhoneNumberText=(TextView) findViewById(R.id.user_phonenumber);
         userPhoneNumberText.setText(datas[6]);
-        userEmailText=(EditText) findViewById(R.id.user_email);
+        userEmailText=(TextView) findViewById(R.id.user_email);
         userEmailText.setText(datas[7]);
-        userRegisterTimeText=(EditText) findViewById(R.id.user_registerTime);
+        userRegisterTimeText=(TextView) findViewById(R.id.user_registerTime);
         userRegisterTimeText.setText(datas[8]);
         userRegisterTimeText.setFocusable(false);
         userRegisterTimeText.setFocusableInTouchMode(false);
@@ -114,10 +115,24 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
             actionBar.setHomeAsUpIndicator(R.drawable.ic_backup);
         }
         String imageName = datas[9];
-        imageUrl = imageUrl+imageName;
-        Glide.with(UserDataActivity.this).load(imageUrl).error(R.mipmap.ic_launcher).into(userPortrait);
+        imageUrl = imageUrl+datas[1]+"/image/";
+        Glide.with(UserDataActivity.this).load(imageUrl).error(R.drawable.user_0).into(userPortrait);
         View imageLayout=findViewById(R.id.user_image_layout);
+        View nameLayout=findViewById(R.id.user_name_layout);
+        View genderLayout=findViewById(R.id.user_gender_layout);
+        View heightLayout = findViewById(R.id.user_height_layout);
+        View weightLayout=findViewById(R.id.user_weight_layout);
+        View ageLayout=findViewById(R.id.user_age_layout);
+        View emailLayout=findViewById(R.id.user_email_layout);
+        View phonenumLayout=findViewById(R.id.user_phonenumber_layout);
         imageLayout.setOnClickListener(this);
+        nameLayout.setOnClickListener(this);
+        genderLayout.setOnClickListener(this);
+        heightLayout.setOnClickListener(this);
+        weightLayout.setOnClickListener(this);
+        ageLayout.setOnClickListener(this);
+        emailLayout.setOnClickListener(this);
+        phonenumLayout.setOnClickListener(this);
     }
 
     @Override
@@ -174,7 +189,7 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
 
             jsonObject.put("gender",userGenderText.getText());
             jsonObject.put("emailAddress", userEmailText.getText().toString());
-            jsonObject.put("age",Double.parseDouble( userAgeText.getText().toString()));
+            jsonObject.put("age",Integer.parseInt( userAgeText.getText().toString()));
             jsonObject.put("height", Double.parseDouble(userHeightText.getText().toString()));
             jsonObject.put("phoneNumber", userPhoneNumberText.getText().toString());
             jsonObject.put("weight", Double.parseDouble(userWeightText.getText().toString()));
@@ -230,6 +245,7 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
 
         @Override
         public void onClick(View v) {
+            final EditText et = new EditText(UserDataActivity.this);//输入信息的
             switch (v.getId()){
                 case R.id.user_image_layout:
                     new AlertDialog.Builder(UserDataActivity.this)
@@ -278,9 +294,122 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
                             ).setNegativeButton("取消", null)
                             .show();
                     break;
+                case R.id.user_name_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    userNameText.setText(et.getText());
 
+                                }
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_height_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入身高(cm)")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            userHeightText.setText(et.getText());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_weight_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入体重(kg)")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            userWeightText.setText(et.getText());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_age_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入年龄")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            userAgeText.setText(et.getText());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_email_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入邮箱")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            userEmailText.setText(et.getText());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_phonenumber_layout:
+                    new AlertDialog.Builder(UserDataActivity.this)
+                            .setTitle("请输入手机号码")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setView(et)
+                            .setPositiveButton("确定",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            userPhoneNumberText.setText(et.getText());
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
+                case R.id.user_gender_layout:
+                    new AlertDialog.Builder(this)
+                            .setTitle("请选择性别")
+                            .setIcon(android.R.drawable.ic_dialog_info)
+                            .setSingleChoiceItems(new String[] {"男","女"}, 0,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            if(which == 0)
+                                                userGenderText.setText("男");
+                                            else
+                                                userGenderText.setText("女");
+                                        }
+                            })
+                            .setNegativeButton("取消", null)
+                            .show();
+                    break;
                 default:
-
+                    Toast.makeText(UserDataActivity.this,"此项无法修改",Toast.LENGTH_SHORT).show();
             }
 
     }

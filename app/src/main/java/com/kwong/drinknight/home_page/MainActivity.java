@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.kwong.drinknight.login.Register;
 import com.kwong.drinknight.ranking_page.RankingActivity;
 import com.kwong.drinknight.user_data_page.UserData;
 import com.kwong.drinknight.user_data_page.UserDataActivity;
+import com.kwong.drinknight.utils.UpdateAll;
 
 
 import org.json.JSONArray;
@@ -53,10 +55,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,6 +70,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
+import static com.kwong.drinknight.utils.Global.drinkDataList;
+import static com.kwong.drinknight.utils.Global.suggestedVolumeDose;
+import static com.kwong.drinknight.utils.Global.suggestedNextTime;
+import static com.kwong.drinknight.utils.Global.sumdrink;
+import static com.kwong.drinknight.utils.Global.userData;
+import static com.kwong.drinknight.utils.Global.volumeDose;
+import static com.kwong.drinknight.utils.UpdateAll.parseJSONWithGSONtoUserData;
 import static java.lang.Float.parseFloat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -76,22 +88,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static int fuck1;
     private static TextView suggestedVolumeDoseText;
     private static TextView suggestedNextTimeText;
-    private static UserData userData;
-    private static List<DrinkData>drinkDataList;
-    public static String suggestedVolumeDose;
-    public static String suggestedNextTime;
+
+
     private static MySinkingView mSinkingView;
     public static ArrayList<String>DrinkingTime=new ArrayList<>();
     public static ArrayList<Integer>DrinkingDose=new ArrayList<>();
     private static LinkedHashMap<String,HashMap<String,Double>> DrinkDateTime = new LinkedHashMap<String,HashMap<String,Double>>();
     private static String id;
-    public static double sumdrink;
-    public static  float volumeDose = 0;
+
 
     public DrawerLayout mDrawerLayout;
     public CircleImageView userimage;
     Intent intent1;
-
+    public SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userNameText = (TextView)findViewById(R.id.user_name);
         suggestedNextTimeText = (TextView)findViewById(R.id.suggested_next_time);
         suggestedVolumeDoseText = (TextView)findViewById(R.id.suggested_volume_dose);
-
-        sendRequestWithOkHttp();
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSinkingView = (MySinkingView) findViewById(R.id.sinking);
+        mSinkingView.setTextColor(R.color.colorPrimary);
+        updateUI();//更新数据及UI
+
+
         intent1 = new Intent(this, NotifyService.class);
         //开启关闭Service
         startService(intent1);
@@ -157,50 +170,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton toDrinkButton=(FloatingActionButton)findViewById(R.id.to_drink);
         toDrinkButton.setOnClickListener(this);
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
-    }
 
-    public static void sendRequestWithOkHttp() {
-        new Thread(new Runnable() {
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void run() {
-                try{
-                    //Log.d("MainActivity","into try");
-                    //获得当天饮水数据
-                    OkHttpClient client1 = new OkHttpClient();
-                    Request request1 = new Request.Builder()
-                            .url(SERVER_URL+"/user/"+id+"/drinkdatas/#")
-
-                            .build();
-                    System.out.println(id);
-                    //Log.d("MainActivity","request success");
-                    Response response1 = client1.newCall(request1).execute();
-
-                    String responseData1 = response1.body().string();
-                    System.out.println(responseData1);
-                    drinkDataList = parseJSONWithGSONtoDrinkData(responseData1);
-                    //Log.d("MainActivity","GSON success"+drinkDataList.size());
-                    //获得用户数据
-
-                    OkHttpClient client2 = new OkHttpClient();
-                    Request request2 = new Request.Builder()
-                            .url(SERVER_URL+"/user/"+id+"/profile/#")
-                            .build();
-                    //Log.d("MainActivity","request2 success");
-                    Response response2 = client2.newCall(request2).execute();
-                    String responseData2 = response2.body().string();
-                    userData = parseJSONWithGSONtoUserData(responseData2);
-
-                    //Log.d("MainActivity","GSON2 success"+userData.getName());
-                    Activity a = (Activity)volumeDoseText.getContext();
-                    handleDatas(a,drinkDataList,userData);
-                    //Log.d("MainActivity","HANDLE success");
-                    //showUserData(userData);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+            public void onRefresh() {
+                updateUI();
             }
-        }).start();
+        });
     }
+
+
 
     private void showUserData(UserData userData) {
         String userName;
@@ -232,27 +212,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(intent,1);
     }
 
-    //解析json格式数据
-    private static List parseJSONWithGSONtoDrinkData(String jsonData) {
-        Gson gson = new Gson();
-        try {
-            JSONObject jsonObject = new JSONObject(jsonData);
-            volumeDose=parseFloat(jsonObject.getString("volume_dose"));
 
-        }
-        catch (Exception e){
+    public void updateUI(){
+        //Activity a = (Activity)volumeDoseText.getContext();
+        swipeRefreshLayout.setRefreshing(true);
+        UpdateAll.UpdateTask updateTask = new UpdateAll.UpdateTask();
+        updateTask.execute((Void)null);
+        try{
+            Thread.sleep(1000);
+
+        }catch (InterruptedException e){
             e.printStackTrace();
         }
-        List<DrinkData> drinkDatas = gson.fromJson(jsonData.substring(jsonData.indexOf("["),jsonData.lastIndexOf("}")), new TypeToken<List<DrinkData>>(){}.getType());
-
-        return drinkDatas;
+        if(drinkDataList != null)
+        {
+            handleDatas((Activity)volumeDoseText.getContext(),drinkDataList,userData);
+        }
+        swipeRefreshLayout.setRefreshing(false);
     }
-    private static UserData parseJSONWithGSONtoUserData(String jsonData) {
-        Gson gson = new Gson();
-        UserData userData = gson.fromJson(jsonData, UserData.class);
-        return userData;
-    }
-
     //处理数据
     public static void handleDatas(Activity activity, List<DrinkData> drinkDataList, UserData userData) {
 
@@ -263,29 +240,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userName=userData.getUserName();
         volumeDose=0;
         //Log.d("MainActivity","handleDatas "+drinkDataList.size()+" "+drinkDataList.get(0).getDose());
-            for (DrinkData oneData : drinkDataList) {
-                //Log.d("MainActivity","handleDatas "+oneData.getDose()+" "+oneData.getName()+" ");
-                lastTime = oneData.getTime();
-                lastDose = String.valueOf(oneData.getDose());
-                volumeDose+=oneData.getDose();
-                //       lastDate=oneData.getDate();
-//            if(!DrinkDateTime.containsKey(lastDate)){
-//                DrinkDateTime.put(lastDate,new HashMap<String, Double>());
-//            }
-//            if(!DrinkDateTime.get(lastDate).containsKey(lastTime)){
-//                DrinkDateTime.get(lastDate).put(lastTime,Double.valueOf(lastDose));
-//
-//            }
-
-//            if(!DrinkingTime.contains(lastTime)) {
-//                DrinkingTime.add(lastTime);
-//                DrinkingDose.add(Integer.valueOf(lastDose));
-//            }
-            }
-
-
-            //Log.d("MainActivity","handleDatas ok");
-            sumdrink = volumeDose;
+        for (DrinkData oneData : drinkDataList) {
+            //Log.d("MainActivity","handleDatas "+oneData.getDose()+" "+oneData.getName()+" ");
+            lastTime = oneData.getTime();
+            lastDose = String.valueOf(oneData.getDose());
+            volumeDose += oneData.getDose();
+        }
+        sumdrink = volumeDose;
 
         System.out.println(sumdrink+"444");
             suggestedVolumeDose = calculateSuggest(userData);
@@ -332,22 +293,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
             });
-//        else {
-//            final  String userNames=userName;
-//            activity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    volumeDoseText.setText("您今天还未喝水");
-//                    lastDoseText.setText("您今天还未喝水");
-//                    lastTimeText.setText("您今天还未喝水");
-//                    userNameText.setText(userNames);
-//                    suggestedVolumeDoseText.setText(suggestedVolumeDose);
-//                    suggestedNextTimeText.setText(suggestedNextTime);
-//
-//                }
-//            });
-//        }
-        //Log.d("MainActivity","handleDatas end");
         volumeDose=0;
     }
     private static String calculateSuggest(UserData userData) {
@@ -376,7 +321,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 userimage = (CircleImageView)findViewById(R.id.icon_image);
-                Glide.with(MainActivity.this).load(SERVER_URL+"/media/"+userData.getImageName()).error(R.mipmap.ic_launcher).into(userimage);
+                Glide.with(MainActivity.this).load(SERVER_URL+"/user/"+userData.getAccount()+"/image/").error(R.drawable.user_0).into(userimage);
+                TextView username = (TextView)findViewById(R.id.username);
+                username.setText(userData.getUserName());
+                TextView mail = (TextView)findViewById(R.id.mail);
+                mail.setText(userData.getEmailAddress());
                 break;
             default:
         }
@@ -470,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      System.out.println(s);
                      if (code == 200) {
                          Toast.makeText(MainActivity.this, "喝水成功", Toast.LENGTH_SHORT).show();
-                        sendRequestWithOkHttp();
+                         updateUI();
                      }
                      else
                      {

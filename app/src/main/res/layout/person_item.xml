@@ -9,14 +9,14 @@
         android:layout_centerVertical="true"
         android:layout_width="30dp"
         android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/person_portrait"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_toRightOf="@+id/person_rank"
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:id="@+id/person_portrait"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/person_rank"
+        />
     <TextView
         android:id="@+id/person_name"
         android:layout_centerVertical="true"

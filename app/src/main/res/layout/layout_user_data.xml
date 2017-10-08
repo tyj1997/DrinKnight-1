@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -20,209 +19,115 @@
         <TextView
             android:text="头像"
             style="@style/datasName" />
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:id="@+id/user_portrait"
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_width="60dp"
-            android:layout_height="60dp" />
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
-        <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:paddingLeft="10dp"
-
-            android:text="姓名"
-            android:textSize="16dp" />
-
-        <EditText
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="40dp"
             />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_name_layout"
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            style="@style/datasName"
+            android:text="姓名" />
 
         <TextView
+            android:id="@+id/user_name"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_account_layout"
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            style="@style/datasName"
+            android:text="账号"
+             />
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-
-            android:paddingLeft="10dp"
-            android:text="ID"
-            android:textSize="16dp" />
-
-        <EditText
+        <TextView
             android:id="@+id/user_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="57dp"
+            style="@style/userDatas"
              />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_gender_layout"
+        style="@style/RelativeLayoutStyle">
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:paddingLeft="10dp"
-            android:text="性别"
-
-            android:textSize="16dp" />
-
-        <EditText
+            style="@style/datasName"
+            android:text="性别" />
+        <TextView
             android:id="@+id/user_gender"
-            android:layout_marginLeft="40dp"
-            android:layout_width="wrap_content"
-            android:singleLine="true"
-            android:layout_height="wrap_content"
+            style="@style/userDatas"
              />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_age_layout"
+        style="@style/RelativeLayoutStyle">
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="年龄"
-            android:paddingRight="10dp"
-            android:textSize="16dp" />
-
-        <EditText
+            style="@style/datasName"
+            android:text="年龄" />
+        <TextView
             android:id="@+id/user_age"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="30dp"
+            style="@style/userDatas"
              />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_height_layout"
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            style="@style/datasName"
+            android:text="身高" />
 
         <TextView
-
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="身高"
-            android:paddingRight="10dp"
-            android:textSize="16dp" />
-
-        <EditText
             android:id="@+id/user_height"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="30dp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_weight_layout"
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            style="@style/datasName"
+            android:text="体重" />
 
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="体重"
-            android:paddingRight="10dp"
-            android:textSize="16dp" />
-
-        <EditText
             android:id="@+id/user_weight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="30dp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+            style="@style/userDatas"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_phonenumber_layout"
+        style="@style/RelativeLayoutStyle">
 
         <TextView
+            style="@style/datasName"
+            android:text="电话号码" />
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="电话号码"
-            android:textSize="16dp"
-             />
-
-        <EditText
+        <TextView
             android:id="@+id/user_phonenumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="8dp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_email_layout"
+        style="@style/RelativeLayoutStyle">
+        <TextView
+            style="@style/datasName"
+            android:text="邮箱" />
 
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="邮箱"
-            android:paddingRight="10dp"
-            android:textSize="16dp" />
-
-        <EditText
             android:id="@+id/user_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="30dp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        style="@style/RelativeLayoutStyle">
+        <TextView
+           style="@style/datasName"
+            android:text="注册时间"/>
 
         <TextView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:text="注册时间"
-            android:textSize="16dp" />
-
-        <EditText
             android:id="@+id/user_registerTime"
-            android:singleLine="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp" />
-    </LinearLayout>
+            style="@style/userDatas" />
+    </RelativeLayout>
 
 </LinearLayout>

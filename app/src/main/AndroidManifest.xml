@@ -44,17 +44,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".drinking_data_view.TodayData" />
-        <activity android:name=".utils.ChoosePhotoActivity"></activity>
+        <activity android:name=".utils.ChoosePhotoActivity" />
 
         <provider
-            android:authorities="com.kwong.drinknight.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.kwong.drinknight.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity android:name=".set_alarm_page.AlarmSetActivity"></activity>
     </application>
 
 </manifest>

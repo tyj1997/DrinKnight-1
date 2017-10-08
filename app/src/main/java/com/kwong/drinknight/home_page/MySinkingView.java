@@ -21,7 +21,7 @@ import com.kwong.drinknight.R;
  */
 
 public class MySinkingView extends FrameLayout {
-    private static final int DEFAULT_TEXTCOLOT = 0xFFFFFFFF;
+    private static final int DEFAULT_TEXTCOLOT = 0x000000;
 
     private static final int DEFAULT_TEXTSIZE = 160;
 

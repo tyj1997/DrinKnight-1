@@ -12,7 +12,6 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -25,7 +24,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,22 +35,23 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.R;
-
-import org.json.JSONObject;
+import com.kwong.drinknight.utils.UpdateAll;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.Manifest.permission.READ_CONTACTS;
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
+import static com.kwong.drinknight.utils.Global.userData;
 
 /**
  * A login screen that offers login via email/password.
@@ -79,12 +78,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private AutoCompleteTextView mAccountView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
     private CheckBox rememberPass;
-    private String name;
+    private static String account;
     private String password;
     private static String s;
     private static String line;
@@ -94,15 +93,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-                    showProgress(true);
-                    mAuthTask = new UserLoginTask(name, password);
-                    mAuthTask.execute((Void) null);
+                    //showProgress(true);
+                    //mAuthTask = new UserLoginTask(account, password);
+                    //mAuthTask.execute((Void) null);
                     break;
                 case 1:
-                    mEmailView.setError("账号不存在");
+                    mAccountView.setError("账号不存在");
                     break;
                 case 2:
-                    mEmailView.setError("密码错误");
+                    mAccountView.setError("密码错误");
                     break;
                 default:
                     break;
@@ -120,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mAccountView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         rememberPass = (CheckBox)findViewById(R.id.remember_pass);
@@ -129,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
+
                     attemptLogin();
                     return true;
                 }
@@ -138,11 +138,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         boolean isRemember = pref.getBoolean("remember_password",false);
         if (isRemember) {
             //将账号和密码设置到文本框
-            String account = pref.getString("account","");
-            String password = pref.getString("password","");
-            mEmailView.setText(account);
+            account = pref.getString("account","");
+            password = pref.getString("password","");
+            mAccountView.setText(account);
             mPasswordView.setText(password);
             rememberPass.setChecked(true);
+            CircleImageView userimage = (CircleImageView)findViewById(R.id.icon_image);
+            Glide.with(LoginActivity.this).load(SERVER_URL+"/user/"+account+"/image/").error(R.drawable.user_0).into(userimage);
             //自动登录
             //showProgress(true);
 
@@ -151,9 +153,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                name= mEmailView.getText().toString();
+                account = mAccountView.getText().toString();
                 password = mPasswordView.getText().toString();
-                loginRequest();
+
+                mAuthTask = new UserLoginTask(account, password);
+                mAuthTask.execute((Void) null);
+              //  loginRequest();
            //     attemptLogin();
             }
         });
@@ -187,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mAccountView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -223,28 +228,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void attemptLogin() {
 
         // Reset errors.
-        mEmailView.setError(null);
+        mAccountView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        name= mEmailView.getText().toString();
+        account = mAccountView.getText().toString();
+        CircleImageView userimage = (CircleImageView)findViewById(R.id.icon_image);
+        Glide.with(LoginActivity.this).load(SERVER_URL+"/user/"+ account +"/image/").error(R.drawable.user_0).into(userimage);
         password = mPasswordView.getText().toString();
-        if (flag==0) {
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(name, password);
-            mAuthTask.execute((Void) null);
-        }
-
         // Check for a valid email address.
-
-        else if(flag==2){
-            mEmailView.setError("密码错误");
-
-        }
-        else if(flag==1){
-            mEmailView.setError("账号不存在");
-        }
         s="";
         boolean cancel = false;
         View focusView = null;
@@ -327,7 +319,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        mAccountView.setAdapter(adapter);
     }
 
 
@@ -356,13 +348,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                HttpURLConnection connection=null;
+                try {
+                    //用GET方法向服务器传送数据，在链接里面传值
+                    URL url = new URL(SERVER_URL+"/login/" + account + "/" + password);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setReadTimeout(5000);
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("charset", "UTF-8");
+                    connection.setConnectTimeout(5000);
+                    connection.setDoInput(true);
+                    connection.setRequestProperty("Accept-Encoding", "identity");
+                    // Wrap a BufferedReader around the InputStream
+                    BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    // Read response until the end
+                    while ((line = rd.readLine()) != null) { s += line; }
+                    // Return full string
+
+                    rd.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            } catch (Exception e) {
                 return false;
             }
 
@@ -380,9 +398,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(final Boolean success) {
+            Message message = new Message();
+            if(s.equals("Success"))
+            {
+                message.what =0;
+                userData.setAccount(mAccountView.getText().toString());
+
+            }
+            else if(s.equals("Nonexistent Account"))
+            {
+                message.what = 1;
+            }
+            else if(s.equals("Wrong Password"))
+            {
+                message.what =2;
+            }
+            s="";
+            handler.sendMessage(message);
+
             mAuthTask = null;
             showProgress(false);
-            String account = mEmailView.getText().toString();
+            String account = mAccountView.getText().toString();
             String password = mPasswordView.getText().toString();
             if (success) {
                 editor = pref.edit();
@@ -397,7 +433,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editor.apply();
 
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                intent.putExtra("user_id",name);
+                intent.putExtra("user_id", LoginActivity.this.account);
                 startActivity(intent);
                 finish();
             } else {
@@ -409,48 +445,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onCancelled() {
             mAuthTask = null;
+
             showProgress(false);
+            super.onCancelled();
+            finish();
         }
     }
-    protected void loginRequest(){
-        Thread thread =new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection=null;
-                try {
-                    //用GET方法向服务器传送数据，在链接里面传值
-                    URL url = new URL(SERVER_URL+"/login/" + name + "/" + password);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setReadTimeout(5000);
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("charset", "UTF-8");
-                    connection.setConnectTimeout(5000);
-                    connection.setDoInput(true);
-                    connection.setRequestProperty("Accept-Encoding", "identity");
-                    // Wrap a BufferedReader around the InputStream
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    // Read response until the end
-                    while ((line = rd.readLine()) != null) { s += line; }
-                    // Return full string
-                    Message message = new Message();
-                    if(s.equals("Success"))
-                        message.what =0;
-                    else if(s.equals("Nonexistent Account"))
-                        message.what = 1;
-                    else if(s.equals("Wrong Password"))
-                        message.what =2;
-                    s="";
-                    handler.sendMessage(message);
-                    rd.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                }
-            }
-        });
-        thread.start();
-    }
-
-
 }
 
