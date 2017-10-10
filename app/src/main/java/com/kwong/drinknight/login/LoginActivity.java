@@ -3,6 +3,7 @@ package com.kwong.drinknight.login;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -24,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,11 +36,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.R;
+import com.kwong.drinknight.user_data_page.UserDataActivity;
 import com.kwong.drinknight.utils.UpdateAll;
 
 import java.io.BufferedReader;
@@ -88,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static String s;
     private static String line;
     private int flag;
+    private ImageButton imageButton;
     private Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -119,6 +125,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+
+        imageButton = (ImageButton)findViewById(R.id.change_url);
+        final EditText et = new EditText(LoginActivity.this);//输入信息的
+        imageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(LoginActivity.this)
+                        .setTitle("请输入URL")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setView(et)
+                        .setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String ip = et.getText().toString();
+                                        SERVER_URL = "http://"+ip;
+                                        Log.d("LoginActivity",SERVER_URL);//FIXME 这一句没有执行？？？
+                                        dialog.dismiss();
+                                    }
+                                })
+                        .setNegativeButton("取消",null)
+                        .show();
+            }
+        });
         mAccountView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         pref = PreferenceManager.getDefaultSharedPreferences(this);

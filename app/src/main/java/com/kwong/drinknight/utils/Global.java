@@ -10,7 +10,9 @@ import java.util.List;
  */
 
 public class Global {
-    public static final String SERVER_URL = "http://10.8.163.98:8000";
+
+    public static String SERVER_URL = "http://10.206.18.173:8089";
+    //public static final String SERVER_URL = "http://10.206.18.173:8089";
     //public static final String SERVER_URL = "http://10.206.13.81:8089";
     //public static final String SERVER_URL = "http://10.206.13.71:8000";
     public static UserData userData = new UserData();//当前用户信息，全局变量
