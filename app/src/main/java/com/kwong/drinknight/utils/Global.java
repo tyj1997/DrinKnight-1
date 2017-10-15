@@ -11,7 +11,9 @@ import java.util.List;
 
 public class Global {
 
-    public static String SERVER_URL = "http://10.206.18.173:8089";
+    //public static String SERVER_URL = "http://10.206.18.173:8089";
+    public static String SERVER_URL = "http://10.8.204.107:8000";
+    //public static String SERVER_URL = "http://10.206.13.82:8000";
     //public static final String SERVER_URL = "http://10.206.18.173:8089";
     //public static final String SERVER_URL = "http://10.206.13.81:8089";
     //public static final String SERVER_URL = "http://10.206.13.71:8000";

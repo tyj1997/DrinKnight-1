@@ -1,7 +1,7 @@
 package com.kwong.drinknight.ranking_page;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
@@ -12,28 +12,32 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kwong.drinknight.R;
+import com.kwong.drinknight.share.GetBitmap;
+import com.kwong.drinknight.share.ShareImageActivity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.sharesdk.onekeyshare.OnekeyShare;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
+import static com.kwong.drinknight.utils.Global.userData;
+import static com.kwong.drinknight.utils.Global.volumeDose;
 
 public class RankingActivity extends AppCompatActivity {
 
@@ -41,6 +45,8 @@ public class RankingActivity extends AppCompatActivity {
     private List<Person>personList = new ArrayList<>();
     private RecyclerView recyclerView ;
     private ProgressBar progressBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,7 @@ public class RankingActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.rank_list);
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
         progressBar = (ProgressBar)findViewById(R.id.rank_progress);
+
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle("排行榜");
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar3);
@@ -58,6 +65,7 @@ public class RankingActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_backup);
         }
+
         InitPersonsTask initPersonsTask =new InitPersonsTask();
         initPersonsTask.execute((Void)null);
     }
@@ -138,15 +146,24 @@ public class RankingActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.share,menu);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.share:
+                Intent intent = new Intent(RankingActivity.this, ShareImageActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
         return true;
     }
+
 }

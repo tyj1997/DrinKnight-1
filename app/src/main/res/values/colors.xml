@@ -2,6 +2,8 @@
 <resources>
 
     <color name="blue">#59ddf4</color>
+    <color name="yellow">#f7ef00</color>
+    <color name="green">#1daf00</color>
     <color name="colorPrimary">#33AC95</color>
     <color name="colorPrimaryDark">#33AC95</color>
     <color name="colorAccent">#FA6B7D</color>

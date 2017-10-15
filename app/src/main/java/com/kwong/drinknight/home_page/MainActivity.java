@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //取消标题栏
         Intent intent=getIntent();
         id=intent.getStringExtra("user_id");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -219,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UpdateAll.UpdateTask updateTask = new UpdateAll.UpdateTask();
         updateTask.execute((Void)null);
         try{
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
         }catch (InterruptedException e){
             e.printStackTrace();
@@ -299,11 +298,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int age = userData.getAge();
         float height = userData.getHeight();
         float weight = userData.getWeight();
-        if ((userData.getGender()).equals("man")){
-            return String.valueOf((age-40)*5+height*10+weight*20+1000);
-        }else {
-            return String.valueOf((age-40)*5+height*10+weight*20+2000);
+        if (userData != null && userData.getGender()!=null){
+            if (userData.getGender().equals("man")){
+                return String.valueOf((age-40)*5+height*10+weight*20+1000);
+            }else {
+                return String.valueOf((age-40)*5+height*10+weight*20+2000);
+            }
         }
+       return "999999";
     }
 
     @Override
