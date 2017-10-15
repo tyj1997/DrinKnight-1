@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.nav_step:
                         Intent intent2 = new Intent(MainActivity.this,StepActivity.class);
+
                         startActivity(intent2);
                         break;
                     default:

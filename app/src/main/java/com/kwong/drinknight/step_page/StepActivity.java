@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kwong.drinknight.R;
+import com.kwong.drinknight.home_page.MainActivity;
 import com.kwong.drinknight.step.UpdateUiCallBack;
 import com.kwong.drinknight.step.service.StepService;
 import com.kwong.drinknight.step.utils.SharedPreferencesUtils;
@@ -49,12 +50,16 @@ public class StepActivity extends AppCompatActivity implements View.OnClickListe
         assignViews();
         initData();
         addListener();
+
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
 
-            this.finish();  //finish当前activity
+            Intent i = new Intent(this, MainActivity.class);
+            // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //如果是服务里调用，必须加入new task标识
+
+            startActivity(i);
             overridePendingTransition(R.anim.in_from_left,
                     R.anim.out_from_right);
             return true;
@@ -163,5 +168,12 @@ public class StepActivity extends AppCompatActivity implements View.OnClickListe
         if (isBind) {
             this.unbindService(conn);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this,MainActivity.class);
+        // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //如果是服务里调用，必须加入new task标识
+
+        startActivity(i);
     }
 }
