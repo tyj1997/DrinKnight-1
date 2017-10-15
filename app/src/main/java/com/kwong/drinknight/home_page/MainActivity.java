@@ -1,6 +1,7 @@
 package com.kwong.drinknight.home_page;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.kwong.drinknight.R;
 import com.kwong.drinknight.background_service.NotifyService;
 import com.kwong.drinknight.drinking_data_view.TodayData;
 import com.kwong.drinknight.ranking_page.RankingActivity;
+import com.kwong.drinknight.step.service.StepService;
 import com.kwong.drinknight.step_page.StepActivity;
 import com.kwong.drinknight.user_data_page.UserData;
 import com.kwong.drinknight.user_data_page.UserDataActivity;
@@ -93,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         id=intent.getStringExtra("user_id");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        Intent in = new Intent(this, StepService.class);
+        startService(in);
         View v =findViewById(R.id.drawer_layout);
         v.getBackground().setAlpha(180);
         volumeDoseText = (TextView)findViewById(R.id.volume_dose);
