@@ -21,5 +21,9 @@
             android:id="@+id/nav_task"
             android:icon="@drawable/ic_tast"
             android:title="Task"/>
+        <item
+            android:id="@+id/nav_step"
+            android:icon="@drawable/ic_tast"
+            android:title="今日步数"/>
     </group>
 </menu>

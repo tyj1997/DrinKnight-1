@@ -3,11 +3,7 @@ package com.kwong.drinknight.home_page;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,30 +19,24 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.kwong.drinknight.R;
 import com.kwong.drinknight.background_service.NotifyService;
 import com.kwong.drinknight.drinking_data_view.TodayData;
-import com.kwong.drinknight.login.LoginActivity;
-import com.kwong.drinknight.login.Register;
 import com.kwong.drinknight.ranking_page.RankingActivity;
+import com.kwong.drinknight.step_page.StepActivity;
 import com.kwong.drinknight.user_data_page.UserData;
 import com.kwong.drinknight.user_data_page.UserDataActivity;
 import com.kwong.drinknight.utils.UpdateAll;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -55,19 +45,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
 import static com.kwong.drinknight.utils.Global.drinkDataList;
@@ -77,7 +61,6 @@ import static com.kwong.drinknight.utils.Global.sumdrink;
 import static com.kwong.drinknight.utils.Global.userData;
 import static com.kwong.drinknight.utils.Global.volumeDose;
 import static com.kwong.drinknight.utils.UpdateAll.parseJSONWithGSONtoUserData;
-import static java.lang.Float.parseFloat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -161,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Intent intent = new Intent(MainActivity.this,RankingActivity.class);
                         startActivity(intent);
                         break;
+                    case R.id.nav_step:
+                        Intent intent2 = new Intent(MainActivity.this,StepActivity.class);
+                        startActivity(intent2);
+                        break;
                     default:
                 }
                 return true;
@@ -170,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatingActionButton toDrinkButton=(FloatingActionButton)findViewById(R.id.to_drink);
         toDrinkButton.setOnClickListener(this);
         overridePendingTransition(R.anim.in_from_right, R.anim.out_from_left);
-
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
