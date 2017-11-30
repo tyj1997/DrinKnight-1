@@ -66,7 +66,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
 
             Glide.with(MyApplication.getContext()).load(SERVER_URL + "/user/" + person.getAccount() + "/image/").error(R.drawable.user_0).into(holder.personImage);
-
+            holder.personRank.setText(position);
             holder.personName.setText(person.getAccount());
             holder.personVolume.setText(String.valueOf(person.getDose()));
 
