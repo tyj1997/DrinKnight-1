@@ -13,14 +13,8 @@
             android:id="@+id/nav_rank"
             android:icon="@drawable/ic_location"
             android:title="饮水排行"/>
-        <item
-            android:id="@+id/nav_mail"
-            android:icon="@drawable/ic_mail"
-            android:title="Mail"/>
-        <item
-            android:id="@+id/nav_task"
-            android:icon="@drawable/ic_tast"
-            android:title="Task"/>
+
+
         <item
             android:id="@+id/nav_step"
             android:icon="@drawable/ic_tast"

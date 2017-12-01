@@ -9,6 +9,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -18,10 +19,15 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 repositories {
     maven { url "https://jitpack.io" }
 }
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
