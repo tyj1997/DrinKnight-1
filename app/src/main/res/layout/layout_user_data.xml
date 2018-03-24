@@ -28,9 +28,11 @@
             android:layout_alignParentRight="true"
             />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/user_name_layout"
         style="@style/RelativeLayoutStyle">
+
         <TextView
             style="@style/datasName"
             android:text="姓名" />
@@ -39,6 +41,7 @@
             android:id="@+id/user_name"
             style="@style/userDatas" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/user_account_layout"
         style="@style/RelativeLayoutStyle">

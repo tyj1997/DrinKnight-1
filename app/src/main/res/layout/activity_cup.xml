@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/user_title"
+        android:layout_marginTop="20dp"
+        style="@style/RelativeLayoutStyle">
+
+        <TextView
+            style="@style/datasName"
+            android:textSize="32dp"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="我拥有的水杯" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_cup1_layout"
+        android:layout_marginTop="50dp"
+        style="@style/RelativeLayoutStyle">
+
+        <TextView
+            style="@style/datasName"
+            android:textSize="32dp"
+            android:clickable="true"
+            android:text="1号水杯ID" />
+
+        <TextView
+            android:id="@+id/user_cup1"
+            android:textSize="32dp"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginTop="50dp"
+        android:id="@+id/user_cup2_layout"
+        style="@style/RelativeLayoutStyle">
+
+        <TextView
+            style="@style/datasName"
+            android:textSize="32dp"
+            android:text="2号水杯ID" />
+
+        <TextView
+            android:id="@+id/user_cup2"
+            android:textSize="32dp"
+            style="@style/userDatas" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/user_cup3_layout"
+        android:layout_marginTop="50dp"
+        style="@style/RelativeLayoutStyle">
+
+        <TextView
+            style="@style/datasName"
+            android:textSize="32dp"
+
+            android:text="3号水杯ID" />
+
+        <TextView
+            android:id="@+id/user_cup3"
+            android:textSize="32dp"
+            style="@style/userDatas" />
+    </RelativeLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.05"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/add_cup"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/button"
+            android:text="添加水杯"
+            android:textSize="24dp" />
+
+        <Button
+            android:id="@+id/dlt_cup"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1.24"
+            android:background="@drawable/button"
+            android:text="删除水杯"
+            android:textSize="24dp" />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

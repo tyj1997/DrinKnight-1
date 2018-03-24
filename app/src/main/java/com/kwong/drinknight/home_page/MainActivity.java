@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.kwong.drinknight.R;
 import com.kwong.drinknight.background_service.NotifyService;
+import com.kwong.drinknight.cup_page.CupActivity;
 import com.kwong.drinknight.drinking_data_view.TodayData;
 import com.kwong.drinknight.ranking_page.RankingActivity;
 import com.kwong.drinknight.step.service.StepService;
@@ -54,6 +55,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
 import static com.kwong.drinknight.utils.Global.drinkDataList;
@@ -148,8 +151,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case R.id.nav_step:
                         Intent intent2 = new Intent(MainActivity.this,StepActivity.class);
-
                         startActivity(intent2);
+                        break;
+                    case R.id.nav_cup:
+
+                        showUserCup(userData);
+
                         break;
                     default:
                 }
@@ -187,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageName = userData.getImageName();
         account = userData.getAccount();
         gender = userData.getGender();
-
+        System.out.println(userData.getPhoneNumber());
+        System.out.println(userData.getCup1ID());
         userAge = userData.getAge();
         userHeight = userData.getHeight();
         userWeight = userData.getWeight();
@@ -198,6 +206,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(MainActivity.this,UserDataActivity.class);
         intent.putExtra("user_datas",userDatas);
         startActivityForResult(intent,1);
+    }
+    private  void showUserCup(UserData userData)
+    {
+        try {
+            OkHttpClient client2 = new OkHttpClient();
+            Request request2 = new Request.Builder()
+                    .url(SERVER_URL + "/user/" + userData.getAccount() + "/profile/#")
+                    .build();
+            //Log.d("MainActivity","request2 success");
+            Response response2 = client2.newCall(request2).execute();
+            String responseData2 = response2.body().string();
+            userData = parseJSONWithGSONtoUserData(responseData2);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        String cupID1;
+        String cupID2;
+        String cupID3;
+        cupID1=userData.getCup1ID();
+        cupID2=userData.getCup2ID();
+        cupID3=userData.getCup3ID();
+        System.out.println(cupID1);
+        System.out.println(cupID2);
+        System.out.println(cupID3);
+        System.out.println("55555555555555555555555566555555555");
+        String []cupIDs={cupID1,cupID2,cupID3};
+        Intent inten3=new Intent(MainActivity.this,CupActivity.class);
+        inten3.putExtra("user_id",id);
+        inten3.putExtra("cup_ids",cupIDs);
+        startActivityForResult(inten3,2);
+
     }
 
 
@@ -355,6 +396,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (resultCode == RESULT_OK) {
                     userData = parseJSONWithGSONtoUserData(data.getStringExtra("json_return"));
                     handleDatas((Activity)volumeDoseText.getContext(),drinkDataList,userData);
+                }
+                break;
+            case 2:
+                if (resultCode == RESULT_OK) {
+                    userData = parseJSONWithGSONtoUserData(data.getStringExtra("json_return"));
+
                 }
                 break;
             default:

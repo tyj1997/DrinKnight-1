@@ -17,6 +17,34 @@ public class UserData {
     float weight;
     String emailAddress;
     String imageName;
+
+    String cup1ID;
+    String cup2ID;
+    String cup3ID;
+    public String getCup1ID() {
+        return cup1ID;
+    }
+
+    public void setCup1ID(String cup1ID) {
+        this.cup1ID = cup1ID;
+    }
+
+    public void setCup2ID(String cup2ID) {
+        this.cup2ID = cup2ID;
+    }
+
+    public void setCup3ID(String cup3ID) {
+        this.cup3ID = cup3ID;
+    }
+
+    public String getCup2ID() {
+        return cup2ID;
+    }
+
+    public String getCup3ID() {
+        return cup3ID;
+    }
+
     public UserData(){}
     public String getImageName() {
         return imageName;

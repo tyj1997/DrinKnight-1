@@ -184,6 +184,7 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
         try {
             urls=new URL(urlPath);
             JSONObject jsonObject = new JSONObject();
+
             jsonObject.put("userName", userNameText.getText().toString());
             jsonObject.put("account", userIdText.getText().toString());
 
@@ -193,9 +194,11 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
             jsonObject.put("height", Double.parseDouble(userHeightText.getText().toString()));
             jsonObject.put("phoneNumber", userPhoneNumberText.getText().toString());
             jsonObject.put("weight", Double.parseDouble(userWeightText.getText().toString()));
+            jsonObject.put("CupID1", Double.parseDouble(userWeightText.getText().toString()));
             OkHttpClient okHttpClient = new OkHttpClient();
             //创建一个RequestBody(参数1：数据类型 参数2传递的json串)
             System.out.println(jsonObject.toString());
+            System.out.println("546543643634643643");
             String content = String.valueOf(jsonObject);
             HttpURLConnection conn = (HttpURLConnection) urls.openConnection();
             conn.setConnectTimeout(5000);
@@ -227,6 +230,7 @@ public class UserDataActivity extends AppCompatActivity implements View.OnClickL
                     builder.append(line).append("\n");
                 }
                 content = builder.toString();
+                System.out.println(content);
                 intent.putExtra("json_return",content);
                 setResult(RESULT_OK,intent);
 

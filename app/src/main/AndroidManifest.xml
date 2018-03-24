@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
@@ -30,8 +29,6 @@
     <uses-feature
         android:name="android.hardware.sensor.stepdetector"
         android:required="true" />
-
-
 
     <application
         android:name=".utils.MyApplication"
@@ -79,13 +76,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
-
-
-        <activity android:name=".step_page.StepActivity" >
-
-        </activity>
+        <activity android:name=".step_page.StepActivity"></activity>
         <activity
             android:name=".step_page.HistoryActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -94,7 +85,8 @@
             android:name=".step.service.StepService"
             android:priority="1000">
             <intent-filter>
-                <!-- 系统启动完成后会调用-->
+
+                <!-- 系统启动完成后会调用 -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
@@ -109,7 +101,8 @@
             android:priority="1000"
             android:process="com.kwong.drinknight.pedometer.StepsDetectService">
             <intent-filter>
-                <!-- 系统启动完成后会调用-->
+
+                <!-- 系统启动完成后会调用 -->
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
@@ -119,9 +112,6 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </service>
-
-
-
 
         <activity
             android:name="com.mob.tools.MobUIShell"
@@ -170,8 +160,9 @@
             android:name="Mob-AppSecret"
             android:value="1cc7c7e45f063115991e1c2efecac8e2" />
 
-        <activity android:name=".share.ShareImageActivity"></activity>
->>>>>>> d3004e3911eff7140ce70b061a29045b17d3e175
+        <activity android:name=".share.ShareImageActivity" />
+        >>>>>>> d3004e3911eff7140ce70b061a29045b17d3e175
+        <activity android:name=".cup_page.CupActivity"></activity>
     </application>
 
 </manifest>
