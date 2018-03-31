@@ -20,6 +20,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.kwong.drinknight.utils.Global.SERVER_URL;
+import static com.kwong.drinknight.utils.Global.day_flag;
 import static com.kwong.drinknight.utils.Global.drinkDataList;
 import static com.kwong.drinknight.utils.Global.userData;
 import static com.kwong.drinknight.utils.Global.volumeDose;
@@ -79,7 +80,7 @@ public  class UpdateAll {
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            volumeDose=parseFloat(jsonObject.getString("volume_dose"));
+            volumeDose[day_flag]=parseFloat(jsonObject.getString("volume_dose"));
 
         }
         catch (Exception e){

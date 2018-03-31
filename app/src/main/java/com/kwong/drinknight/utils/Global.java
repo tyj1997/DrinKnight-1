@@ -22,6 +22,7 @@ public class Global {
     public static String suggestedVolumeDose;
     public static String suggestedNextTime;
     public static double sumdrink;
-    public static  float volumeDose = 0;
+    public static  float volumeDose[]={0,0,0};
+    public static int day_flag;
 
 }

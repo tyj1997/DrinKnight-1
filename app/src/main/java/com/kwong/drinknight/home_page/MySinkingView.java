@@ -96,13 +96,18 @@ public class MySinkingView extends FrameLayout {
         canvas.clipPath(path, Op.REPLACE);
 
         if (mFlag == Status.RUNNING) {
-            if (mScaledBitmap == null) {
-                mBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wave2);
+            //if (mScaledBitmap == null) {
+                if(mPercent<0.2)
+                    mBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wave0);
+                else if(mPercent<0.9)
+                    mBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wave1);
+                else
+                    mBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wave2);
                 mScaledBitmap = Bitmap.createScaledBitmap(mBitmap, mBitmap.getWidth(), getHeight(), false);
                 mBitmap.recycle();
                 mBitmap = null;
                 mRepeatCount = (int) Math.ceil(getWidth() / mScaledBitmap.getWidth() + 0.5) + 1;
-            }
+           // }
             for (int idx = 0; idx < mRepeatCount; idx++) {
                 canvas.drawBitmap(mScaledBitmap, mLeft + (idx - 1) * mScaledBitmap.getWidth(), (1-mPercent) * getHeight(), null);
             }
@@ -119,7 +124,14 @@ public class MySinkingView extends FrameLayout {
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(4);
             mPaint.setAntiAlias(true);
-            mPaint.setColor(Color.rgb(33, 211, 39));
+            if(mPercent<0.2)
+                mPaint.setColor(Color.rgb(237, 28, 36));
+            else if(mPercent<0.9)
+                mPaint.setColor(Color.rgb(33, 211, 39));
+            else
+                mPaint.setColor(Color.rgb(255, 201, 14));
+
+
             canvas.drawCircle(width / 2, height / 2, width / 2 - 2, mPaint);
 
             postInvalidateDelayed(20);
